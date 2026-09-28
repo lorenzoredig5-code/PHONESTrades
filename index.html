@@ -1,0 +1,1449 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Celular Tycoon & Trades</title>
+  
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- Firebase Compat SDKs -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-database-compat.js"></script>
+
+  <style>
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: #080d1a;
+      color: #f3f4f6;
+      user-select: none;
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #334155;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #475569;
+    }
+
+    /* Pulse Glow Animations */
+    .glow-cyan {
+      box-shadow: 0 0 25px rgba(6, 182, 212, 0.25);
+    }
+    .glow-emerald {
+      box-shadow: 0 0 25px rgba(16, 185, 129, 0.25);
+    }
+    .glow-purple {
+      box-shadow: 0 0 25px rgba(168, 85, 247, 0.25);
+    }
+
+    /* Floating Money Particle */
+    @keyframes floatUp {
+      0% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: translateY(-45px) scale(1.2);
+      }
+    }
+    .money-float {
+      position: absolute;
+      animation: floatUp 1.1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      pointer-events: none;
+      font-weight: 800;
+      color: #10b981;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.9);
+      z-index: 50;
+    }
+
+    /* Glassmorphism */
+    .glass-card {
+      background: rgba(15, 23, 42, 0.8);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+    .glass-nav {
+      background: rgba(8, 13, 26, 0.85);
+      backdrop-filter: blur(16px);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed top-5 right-5 z-50 flex flex-col gap-3 max-w-sm w-full pointer-events-none"></div>
+
+  <!-- AUTH / LOGIN SCREEN -->
+  <div id="auth-screen" class="fixed inset-0 z-40 bg-[#080d1a] flex items-center justify-center p-4">
+    <div class="glass-card rounded-3xl p-6 sm:p-8 w-full max-w-md shadow-2xl relative overflow-hidden">
+      
+      <!-- Background Ambient Glows -->
+      <div class="absolute -top-12 -right-12 w-40 h-40 bg-cyan-500/20 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -bottom-12 -left-12 w-40 h-40 bg-purple-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+      <!-- Header Logo -->
+      <div class="text-center mb-8 relative z-10">
+        <div class="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-purple-600 text-white mb-4 shadow-lg shadow-cyan-500/30 transform hover:rotate-6 transition-transform">
+          <i class="fa-solid fa-mobile-screen-button text-4xl"></i>
+        </div>
+        <h1 class="text-3xl font-black tracking-tight text-white">Celular Tycoon</h1>
+        <p class="text-slate-400 text-xs mt-1.5 font-medium">Império de Celulares & Trocas Multiplayer</p>
+      </div>
+
+      <!-- Auto Login Loading Spinner -->
+      <div id="auto-login-spinner" class="hidden text-center py-6">
+        <div class="inline-block w-10 h-10 border-4 border-cyan-500/20 border-t-cyan-500 rounded-full animate-spin mb-3"></div>
+        <p class="text-slate-300 text-sm font-semibold">Restaurando sessão salva...</p>
+      </div>
+
+      <!-- Auth Form -->
+      <form id="auth-form" class="space-y-4 relative z-10" onsubmit="handleAuthSubmit(event)">
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Nome de Usuário</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <i class="fa-solid fa-user"></i>
+            </span>
+            <input type="text" id="auth-username" maxlength="15" required
+              class="w-full bg-slate-900/90 border border-slate-700/80 text-white pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm placeholder-slate-500"
+              placeholder="Digite seu nome de usuário...">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Senha</label>
+          <div class="relative">
+            <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+              <i class="fa-solid fa-lock"></i>
+            </span>
+            <input type="password" id="auth-password" required
+              class="w-full bg-slate-900/90 border border-slate-700/80 text-white pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all text-sm placeholder-slate-500"
+              placeholder="Digite sua senha...">
+          </div>
+        </div>
+
+        <div id="auth-error" class="hidden text-xs text-red-400 bg-red-950/60 border border-red-800/80 p-3 rounded-xl text-center font-medium"></div>
+
+        <button type="submit" id="auth-submit-btn"
+          class="w-full bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 hover:from-cyan-400 hover:to-purple-500 text-white font-bold py-3.5 px-4 rounded-xl shadow-lg shadow-cyan-500/25 active:scale-[0.98] transition-all duration-200 mt-2 flex items-center justify-center gap-2 text-sm">
+          <span>Entrar / Criar Conta</span>
+          <i class="fa-solid fa-arrow-right text-xs"></i>
+        </button>
+
+        <p class="text-[11px] text-slate-500 text-center mt-3">
+          <i class="fa-solid fa-shield-halved text-cyan-500 mr-1"></i> Sua conta é salva automaticamente neste navegador!
+        </p>
+      </form>
+    </div>
+  </div>
+
+  <!-- MAIN APP SCREEN -->
+  <div id="app-screen" class="hidden min-h-screen flex flex-col">
+    
+    <!-- Header -->
+    <header class="glass-nav border-b border-slate-800/80 sticky top-0 z-30">
+      <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
+        
+        <!-- User Profile & Status -->
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white shadow-md shadow-cyan-500/20 font-bold">
+            <i class="fa-solid fa-user-astronaut"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <span id="user-display-name" class="font-extrabold text-white text-base leading-none">---</span>
+              <span class="inline-flex items-center gap-1 text-[10px] bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded-full font-medium">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span> Online
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-400 mt-0.5">Celular Tycoon v2.5</p>
+          </div>
+        </div>
+
+        <!-- Balance & Income Stats -->
+        <div class="flex items-center gap-2 sm:gap-4">
+          <!-- Balance Badge -->
+          <div class="relative bg-slate-900/90 border border-slate-800 rounded-2xl px-3.5 py-1.5 flex items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-black text-sm">
+              R$
+            </div>
+            <div>
+              <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Saldo</div>
+              <div id="balance-display" class="font-black text-emerald-400 text-sm sm:text-base leading-none">R$ 0</div>
+            </div>
+            <div id="money-float-anchor" class="absolute inset-0 pointer-events-none"></div>
+          </div>
+
+          <!-- Yield Badge -->
+          <div class="hidden sm:flex bg-slate-900/90 border border-slate-800 rounded-2xl px-3.5 py-1.5 items-center gap-3">
+            <div class="w-8 h-8 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center text-sm">
+              <i class="fa-solid fa-bolt"></i>
+            </div>
+            <div>
+              <div class="text-[9px] uppercase tracking-wider text-slate-400 font-bold">Rendimento</div>
+              <div id="income-display" class="font-black text-cyan-400 text-xs sm:text-sm leading-none">+R$ 0/s</div>
+            </div>
+          </div>
+
+          <!-- LOGOUT BUTTON (SAIR DA CONTA) -->
+          <button onclick="handleLogout()" title="Sair da Conta"
+            class="flex items-center gap-2 px-3 py-2 rounded-xl bg-slate-900 hover:bg-red-950/80 text-slate-300 hover:text-red-400 transition-colors border border-slate-800 hover:border-red-800 text-xs font-semibold">
+            <i class="fa-solid fa-right-from-bracket"></i>
+            <span class="hidden md:inline">Sair</span>
+          </button>
+        </div>
+
+      </div>
+    </header>
+
+    <!-- Navigation Tabs Bar -->
+    <nav class="bg-slate-950/90 border-b border-slate-800/80 sticky top-[61px] z-20">
+      <div class="max-w-6xl mx-auto px-4 flex space-x-2 sm:space-x-6 overflow-x-auto no-scrollbar">
+        <button onclick="switchTab('inventory')" id="tab-btn-inventory"
+          class="tab-btn active px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-cyan-500 text-cyan-400 flex items-center gap-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-boxes-stacked"></i> Meus Celulares
+        </button>
+        <button onclick="switchTab('shop')" id="tab-btn-shop"
+          class="tab-btn px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-store"></i> Loja
+        </button>
+        <button onclick="switchTab('trades')" id="tab-btn-trades"
+          class="tab-btn px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition-all relative">
+          <i class="fa-solid fa-handshake"></i> Trocas
+          <span id="pending-trade-badge" class="hidden w-2.5 h-2.5 rounded-full bg-cyan-400 animate-ping"></span>
+        </button>
+        <button onclick="switchTab('players')" id="tab-btn-players"
+          class="tab-btn px-4 py-3 text-xs sm:text-sm font-bold border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 whitespace-nowrap transition-all">
+          <i class="fa-solid fa-users"></i> Jogadores
+        </button>
+      </div>
+    </nav>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4 py-6 flex-grow w-full">
+      
+      <!-- TAB 1: MEUS CELULARES (INVENTÁRIO) -->
+      <section id="tab-inventory" class="tab-content space-y-6">
+        
+        <!-- Free Galaxy A01 Core Banner -->
+        <div class="bg-gradient-to-r from-cyan-950/70 via-slate-900 to-slate-900 border border-cyan-800/50 rounded-3xl p-5 sm:p-6 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xl relative overflow-hidden">
+          <div class="flex items-center gap-4">
+            <div class="w-14 h-14 rounded-2xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center text-white text-2xl shrink-0 shadow-lg shadow-cyan-500/20">
+              <i class="fa-solid fa-gift"></i>
+            </div>
+            <div>
+              <div class="inline-block px-2.5 py-0.5 rounded-full bg-cyan-500/20 text-cyan-300 text-[10px] font-bold uppercase mb-1">Iniciante Grátis</div>
+              <h3 class="text-lg font-black text-white">Samsung Galaxy A01 Core</h3>
+              <p class="text-xs text-slate-300 mt-0.5">Pegue seu celular gratuito de entrada para começar seu império gerando <strong class="text-emerald-400">+R$ 1/s</strong>!</p>
+            </div>
+          </div>
+
+          <button id="claim-free-btn" onclick="claimFreePhone()"
+            class="w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold shadow-lg shadow-emerald-500/25 active:scale-95 transition-all whitespace-nowrap shrink-0 flex items-center justify-center gap-2 text-xs sm:text-sm">
+            <i class="fa-solid fa-download"></i>
+            <span>Pegar Celular Grátis</span>
+          </button>
+        </div>
+
+        <!-- Inventory Header -->
+        <div class="flex items-center justify-between">
+          <h2 class="text-lg font-bold text-white flex items-center gap-2">
+            <i class="fa-solid fa-mobile-screen-button text-cyan-400"></i> Seus Dispositivos Ativos
+          </h2>
+          <span id="inventory-count" class="text-xs font-semibold bg-slate-900 text-slate-300 px-3 py-1 rounded-full border border-slate-800">0 Dispositivos</span>
+        </div>
+
+        <!-- Inventory Grid -->
+        <div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- TAB 2: LOJA DE CELULARES -->
+      <section id="tab-shop" class="tab-content hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-black text-white">Catálogo de Celulares</h2>
+          <p class="text-slate-400 text-xs mt-1">Adquira novos modelos para acelerar seus ganhos automáticos por segundo!</p>
+        </div>
+
+        <!-- Shop Grid -->
+        <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+      <!-- TAB 3: SISTEMA DE TROCAS -->
+      <section id="tab-trades" class="tab-content hidden space-y-6">
+        
+        <!-- Search & Send Trade Request -->
+        <div class="glass-card rounded-3xl p-5 sm:p-6 shadow-xl">
+          <h3 class="text-base font-extrabold text-white mb-1 flex items-center gap-2">
+            <i class="fa-solid fa-paper-plane text-cyan-400"></i> Iniciar Proposta de Troca
+          </h3>
+          <p class="text-xs text-slate-400 mb-4">Digite o nome de usuário (ou inicial) de outro jogador online para enviar um pedido de troca em segundo plano.</p>
+
+          <form onsubmit="handleSearchAndRequestTrade(event)" class="flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-grow">
+              <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-500">
+                <i class="fa-solid fa-magnifying-glass"></i>
+              </span>
+              <input type="text" id="trade-search-input" required
+                class="w-full bg-slate-900/90 border border-slate-800 text-white pl-10 pr-4 py-3 rounded-xl focus:outline-none focus:border-cyan-500 text-xs sm:text-sm placeholder-slate-500"
+                placeholder="Nome do usuário ou inicial...">
+            </div>
+            <button type="submit"
+              class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+              <i class="fa-solid fa-share"></i>
+              <span>Enviar Pedido</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- ACTIVE TRADE ROOM PANEL -->
+        <div id="active-trade-room" class="hidden glass-card border-2 border-cyan-500/60 rounded-3xl p-5 sm:p-6 shadow-2xl relative">
+          
+          <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-6">
+            <div>
+              <span class="text-[10px] uppercase font-extrabold text-cyan-400 tracking-wider">Sala de Negociação ao Vivo</span>
+              <h2 id="trade-partner-title" class="text-lg sm:text-xl font-black text-white">Negociando com: ---</h2>
+            </div>
+            <button onclick="cancelTrade()" class="text-xs bg-red-950/80 hover:bg-red-900 text-red-300 border border-red-800 px-3 py-1.5 rounded-xl font-semibold transition-colors">
+              <i class="fa-solid fa-xmark mr-1"></i> Cancelar Troca
+            </button>
+          </div>
+
+          <!-- Trade Split Screen -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            <!-- Side 1: My Offer -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h4 class="font-bold text-slate-200 text-xs sm:text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user-check text-emerald-400"></i> Sua Oferta / Doação
+                  </h4>
+                  <span id="my-trade-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-semibold">Pendente</span>
+                </div>
+
+                <!-- Select Phone to Offer -->
+                <div class="mb-4">
+                  <label class="block text-[11px] font-medium text-slate-400 mb-1">Adicionar celular do seu inventário:</label>
+                  <select id="my-trade-select" onchange="addPhoneToMyOffer(this.value)"
+                    class="w-full bg-slate-950 border border-slate-800 text-white rounded-xl p-2.5 text-xs focus:outline-none focus:border-cyan-500">
+                    <option value="">-- Selecione para Adicionar --</option>
+                  </select>
+                </div>
+
+                <!-- Offered Items List -->
+                <div id="my-offered-phones-list" class="space-y-2 min-h-[120px] bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  <span class="text-xs text-slate-500 italic block text-center py-8">Nenhum celular selecionado</span>
+                </div>
+              </div>
+
+              <button id="p1-accept-btn" onclick="toggleAcceptTrade()"
+                class="w-full mt-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 active:scale-95 transition-all">
+                <i class="fa-solid fa-check"></i> Aceitar Troca
+              </button>
+            </div>
+
+            <!-- Side 2: Partner Offer -->
+            <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
+              <div>
+                <div class="flex items-center justify-between mb-3">
+                  <h4 id="partner-offer-title" class="font-bold text-slate-200 text-xs sm:text-sm flex items-center gap-2">
+                    <i class="fa-solid fa-user text-cyan-400"></i> Oferta do Parceiro
+                  </h4>
+                  <span id="partner-trade-status" class="text-[11px] px-2.5 py-0.5 rounded-full bg-slate-800 text-slate-400 font-semibold">Pendente</span>
+                </div>
+
+                <div id="partner-offered-phones-list" class="space-y-2 min-h-[170px] bg-slate-950/60 p-3 rounded-xl border border-slate-800">
+                  <span class="text-xs text-slate-500 italic block text-center py-10">O parceiro ainda não selecionou celulares.</span>
+                </div>
+              </div>
+
+              <!-- DUPLICATE VALIDATION ERROR ALERT BOX -->
+              <div id="trade-duplicate-error" class="hidden mt-3 p-3 bg-red-950/90 border border-red-800 text-red-200 text-xs rounded-xl flex items-start gap-2 shadow-lg">
+                <i class="fa-solid fa-triangle-exclamation text-red-400 text-sm mt-0.5 shrink-0"></i>
+                <span><strong>Erro de Duplicata:</strong> Você ou seu parceiro já possui este modelo de celular no inventário! Não é permitido receber celulares duplicados.</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Received Requests List -->
+        <div class="glass-card rounded-3xl p-5 sm:p-6 shadow-xl">
+          <h3 class="text-sm font-extrabold text-white mb-3 flex items-center gap-2">
+            <i class="fa-solid fa-inbox text-purple-400"></i> Pedidos de Troca Recebidos
+          </h3>
+          <div id="trade-requests-list" class="space-y-3">
+            <p class="text-xs text-slate-500 italic">Nenhum pedido de troca pendente no momento.</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- TAB 4: JOGADORES ONLINE -->
+      <section id="tab-players" class="tab-content hidden space-y-6">
+        <div>
+          <h2 class="text-xl font-black text-white">Jogadores & Comunidade</h2>
+          <p class="text-slate-400 text-xs mt-1">Veja quais jogadores estão online agora e proponha trocas diretamente!</p>
+        </div>
+
+        <div id="online-players-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <!-- Populated dynamically -->
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-slate-950 border-t border-slate-900 py-4 text-center text-[11px] text-slate-500">
+      Celular Tycoon & Trades &copy; 2026 - Persistência LocalStorage & Firebase Realtime
+    </footer>
+  </div>
+
+  <script>
+    // ==========================================
+    // 1. FIREBASE CONFIGURATION
+    // ==========================================
+    const firebaseConfig = {
+      apiKey: "AIzaSyCgP41g0E4BLcx2rK1BhEsUgPEfwpQusDE",
+      authDomain: "ventilador-6b582.firebaseapp.com",
+      databaseURL: "https://ventilador-6b582-default-rtdb.firebaseio.com",
+      projectId: "ventilador-6b582",
+      storageBucket: "ventilador-6b582.firebasestorage.app",
+      messagingSenderId: "631474998135",
+      appId: "1:631474998135:web:0e9c4e083aed213d646f72"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
+
+    // ==========================================
+    // 2. PHONE MODELS CATALOG
+    // ==========================================
+    const PHONES_CATALOG = [
+      {
+        id: "a01core",
+        name: "Samsung Galaxy A01 Core",
+        price: 0,
+        income: 1,
+        color: "from-blue-500 to-indigo-600",
+        icon: "fa-mobile-screen"
+      },
+      {
+        id: "a10",
+        name: "Samsung Galaxy A10",
+        price: 300,
+        income: 10,
+        color: "from-cyan-500 to-blue-600",
+        icon: "fa-mobile-screen-button"
+      },
+      {
+        id: "a26",
+        name: "Samsung Galaxy A26",
+        price: 2000,
+        income: 150,
+        color: "from-teal-500 to-emerald-600",
+        icon: "fa-mobile"
+      },
+      {
+        id: "a56",
+        name: "Samsung Galaxy A56",
+        price: 3000,
+        income: 200,
+        color: "from-purple-500 to-indigo-600",
+        icon: "fa-mobile-screen"
+      },
+      {
+        id: "a34",
+        name: "Samsung Galaxy A34",
+        price: 800,
+        income: 35,
+        color: "from-amber-500 to-orange-600",
+        icon: "fa-mobile-screen-button"
+      },
+      {
+        id: "s24ultra",
+        name: "Samsung Galaxy S24 Ultra",
+        price: 10000,
+        income: 800,
+        color: "from-rose-500 to-red-600",
+        icon: "fa-mobile"
+      }
+    ];
+
+    // ==========================================
+    // 3. GLOBAL APP STATE
+    // ==========================================
+    let currentUser = null; // Username string
+    let userData = {
+      money: 0,
+      inventory: {}, // { phoneId: count }
+      claimedFree: false
+    };
+    let activeTrade = null;
+    let activeTradeId = null;
+    let idleInterval = null;
+    let audioCtx = null;
+    const STORAGE_KEY = 'celular_tycoon_session';
+
+    // Sound FX Generator
+    function initAudio() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+    }
+
+    function playSound(type) {
+      try {
+        initAudio();
+        if (!audioCtx) return;
+
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        const now = audioCtx.currentTime;
+
+        if (type === 'money') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(987, now);
+          osc.frequency.exponentialRampToValueAtTime(1318, now + 0.12);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.12);
+          osc.start(now);
+          osc.stop(now + 0.12);
+        } else if (type === 'notify') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.1);
+          gain.gain.setValueAtTime(0.12, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+          osc.start(now);
+          osc.stop(now + 0.25);
+        } else if (type === 'success') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, now);
+          osc.frequency.setValueAtTime(554.37, now + 0.1);
+          osc.frequency.setValueAtTime(659.25, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } else if (type === 'error') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(180, now);
+          osc.frequency.linearRampToValueAtTime(110, now + 0.2);
+          gain.gain.setValueAtTime(0.15, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        }
+      } catch (e) {
+        console.warn("Audio error:", e);
+      }
+    }
+
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+
+      const bgColors = {
+        info: 'bg-slate-900 border-cyan-500 text-cyan-300',
+        success: 'bg-slate-900 border-emerald-500 text-emerald-300',
+        error: 'bg-slate-900 border-red-500 text-red-300'
+      };
+
+      const icons = {
+        info: 'fa-circle-info',
+        success: 'fa-circle-check',
+        error: 'fa-triangle-exclamation'
+      };
+
+      toast.className = `pointer-events-auto border-l-4 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3 text-xs font-semibold transition-all transform translate-y-2 opacity-0 ${bgColors[type] || bgColors.info}`;
+      toast.innerHTML = `
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid ${icons[type] || icons.info} text-base"></i>
+          <span>${message}</span>
+        </div>
+        <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white p-1">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      `;
+
+      container.appendChild(toast);
+
+      setTimeout(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      }, 10);
+
+      setTimeout(() => {
+        if (toast.parentNode) {
+          toast.classList.add('opacity-0');
+          setTimeout(() => toast.remove(), 300);
+        }
+      }, 4000);
+    }
+
+    // ==========================================
+    // 4. AUTHENTICATION & LOCALSTORAGE AUTO-LOGIN
+    // ==========================================
+    window.addEventListener('DOMContentLoaded', () => {
+      checkSavedSession();
+    });
+
+    async function checkSavedSession() {
+      const savedSession = localStorage.getItem(STORAGE_KEY);
+      if (!savedSession) return;
+
+      try {
+        const sessionObj = JSON.parse(savedSession);
+        if (sessionObj && sessionObj.username) {
+          // Show spinner on auth screen
+          document.getElementById('auth-form').classList.add('hidden');
+          document.getElementById('auto-login-spinner').classList.remove('hidden');
+
+          const userRef = db.ref('/users/' + sessionObj.username);
+          const snap = await userRef.once('value');
+
+          if (snap.exists()) {
+            const data = snap.val();
+            // Perform auto-login
+            loginUser(sessionObj.username, data);
+            showToast(`Bem-vindo de volta, @${sessionObj.username}!`, "success");
+          } else {
+            // User no longer exists in DB
+            localStorage.removeItem(STORAGE_KEY);
+            document.getElementById('auth-form').classList.remove('hidden');
+            document.getElementById('auto-login-spinner').classList.add('hidden');
+          }
+        }
+      } catch (err) {
+        console.error("Auto login error:", err);
+        localStorage.removeItem(STORAGE_KEY);
+        document.getElementById('auth-form').classList.remove('hidden');
+        document.getElementById('auto-login-spinner').classList.add('hidden');
+      }
+    }
+
+    async function handleAuthSubmit(e) {
+      e.preventDefault();
+      const userErr = document.getElementById('auth-error');
+      userErr.classList.add('hidden');
+
+      const usernameInput = document.getElementById('auth-username').value.trim().toLowerCase();
+      const passwordInput = document.getElementById('auth-password').value;
+
+      if (!usernameInput || !passwordInput) {
+        userErr.innerText = "Preencha todos os campos!";
+        userErr.classList.remove('hidden');
+        return;
+      }
+
+      if (usernameInput.length < 3) {
+        userErr.innerText = "O nome de usuário deve ter pelo menos 3 caracteres.";
+        userErr.classList.remove('hidden');
+        return;
+      }
+
+      const userRef = db.ref('/users/' + usernameInput);
+      const snapshot = await userRef.once('value');
+
+      if (snapshot.exists()) {
+        // Existing user login
+        const data = snapshot.val();
+        if (data.password !== passwordInput) {
+          userErr.innerText = "Senha incorreta para esta conta existente!";
+          userErr.classList.remove('hidden');
+          playSound('error');
+          return;
+        }
+        
+        // Save session to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ username: usernameInput, password: passwordInput }));
+        loginUser(usernameInput, data);
+      } else {
+        // Create new account
+        const newUserObj = {
+          password: passwordInput,
+          money: 0,
+          inventory: {},
+          claimedFree: false,
+          createdOn: Date.now()
+        };
+        await userRef.set(newUserObj);
+        
+        // Save session to localStorage
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({ username: usernameInput, password: passwordInput }));
+        loginUser(usernameInput, newUserObj);
+        showToast("Conta criada com sucesso! Sessão salva automaticamente.", "success");
+      }
+    }
+
+    function loginUser(username, data) {
+      currentUser = username;
+      userData = {
+        money: data.money || 0,
+        inventory: data.inventory || {},
+        claimedFree: data.claimedFree || false
+      };
+
+      document.getElementById('user-display-name').innerText = `@${currentUser}`;
+      document.getElementById('auth-screen').classList.add('hidden');
+      document.getElementById('app-screen').classList.remove('hidden');
+
+      // Online Presence
+      setupPresence(username);
+
+      // Realtime Listeners
+      setupRealtimeListeners(username);
+
+      // Start Idle Revenue Engine
+      startIdleEngine();
+
+      playSound('success');
+      renderAllUI();
+    }
+
+    function handleLogout() {
+      // 1. Clear LocalStorage session
+      localStorage.removeItem(STORAGE_KEY);
+
+      // 2. Update presence in Firebase
+      if (currentUser) {
+        db.ref('/users/' + currentUser + '/online').set(false);
+        db.ref('/presence/' + currentUser).remove();
+        
+        // Detach listeners
+        db.ref('/users/' + currentUser).off();
+        db.ref('/trades').off();
+        db.ref('/users').off();
+      }
+
+      // 3. Clear idle timer
+      if (idleInterval) clearInterval(idleInterval);
+
+      // 4. Reset global state
+      currentUser = null;
+      userData = { money: 0, inventory: {}, claimedFree: false };
+      activeTrade = null;
+      activeTradeId = null;
+
+      // 5. Switch UI back to Auth Screen
+      document.getElementById('app-screen').classList.add('hidden');
+      document.getElementById('auth-screen').classList.remove('hidden');
+      document.getElementById('auth-form').classList.remove('hidden');
+      document.getElementById('auto-login-spinner').classList.add('hidden');
+      document.getElementById('auth-username').value = '';
+      document.getElementById('auth-password').value = '';
+
+      showToast("Você saiu da conta com sucesso.", "info");
+    }
+
+    // ==========================================
+    // 5. PRESENCE & IDLE ENGINE
+    // ==========================================
+    function setupPresence(username) {
+      const myPresenceRef = db.ref('/presence/' + username);
+      const userOnlineRef = db.ref('/users/' + username + '/online');
+      
+      db.ref('.info/connected').on('value', (snap) => {
+        if (snap.val() === true) {
+          myPresenceRef.onDisconnect().remove();
+          userOnlineRef.onDisconnect().set(false);
+          
+          myPresenceRef.set(true);
+          userOnlineRef.set(true);
+        }
+      });
+    }
+
+    function setupRealtimeListeners(username) {
+      // User data listener
+      db.ref('/users/' + username).on('value', (snap) => {
+        if (snap.exists()) {
+          const val = snap.val();
+          userData.money = val.money || 0;
+          userData.inventory = val.inventory || {};
+          userData.claimedFree = val.claimedFree || false;
+          updateHeaderDisplays();
+          renderInventoryTab();
+          renderShopTab();
+        }
+      });
+
+      // Trades listener
+      db.ref('/trades').on('value', (snap) => {
+        const trades = snap.val() || {};
+        renderTradeRequestsList(trades);
+        checkActiveTrade(trades);
+      });
+
+      // Online players listener
+      db.ref('/users').on('value', (snap) => {
+        const users = snap.val() || {};
+        renderOnlinePlayers(users);
+      });
+    }
+
+    function calculateTotalIncome() {
+      let income = 0;
+      PHONES_CATALOG.forEach(phone => {
+        const count = userData.inventory[phone.id] || 0;
+        income += phone.income * count;
+      });
+      return income;
+    }
+
+    function startIdleEngine() {
+      if (idleInterval) clearInterval(idleInterval);
+
+      idleInterval = setInterval(() => {
+        const incomePerSec = calculateTotalIncome();
+        if (incomePerSec > 0 && currentUser) {
+          userData.money += incomePerSec;
+          db.ref('/users/' + currentUser + '/money').set(userData.money);
+          spawnMoneyFloat("+" + incomePerSec);
+        }
+      }, 1000);
+    }
+
+    function spawnMoneyFloat(text) {
+      const anchor = document.getElementById('money-float-anchor');
+      if (!anchor) return;
+
+      const el = document.createElement('div');
+      el.className = 'money-float text-xs';
+      el.innerText = text;
+      el.style.left = (Math.random() * 40 + 30) + '%';
+      el.style.top = '0px';
+
+      anchor.appendChild(el);
+      setTimeout(() => el.remove(), 1100);
+    }
+
+    // ==========================================
+    // 6. UI NAVIGATION & INVENTORY RENDERING
+    // ==========================================
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('active', 'border-cyan-500', 'text-cyan-400');
+        btn.classList.add('border-transparent', 'text-slate-400');
+      });
+
+      const activeContent = document.getElementById('tab-' + tabName);
+      const activeBtn = document.getElementById('tab-btn-' + tabName);
+
+      if (activeContent && activeBtn) {
+        activeContent.classList.remove('hidden');
+        activeBtn.classList.add('active', 'border-cyan-500', 'text-cyan-400');
+        activeBtn.classList.remove('border-transparent', 'text-slate-400');
+      }
+
+      playSound('notify');
+    }
+
+    function updateHeaderDisplays() {
+      document.getElementById('balance-display').innerText = 'R$ ' + userData.money.toLocaleString('pt-BR');
+      const income = calculateTotalIncome();
+      document.getElementById('income-display').innerText = '+R$ ' + income.toLocaleString('pt-BR') + '/s';
+    }
+
+    function renderAllUI() {
+      updateHeaderDisplays();
+      renderInventoryTab();
+      renderShopTab();
+    }
+
+    function renderInventoryTab() {
+      const grid = document.getElementById('inventory-grid');
+      const claimBtn = document.getElementById('claim-free-btn');
+      
+      if (userData.claimedFree) {
+        claimBtn.disabled = true;
+        claimBtn.className = "w-full sm:w-auto px-6 py-3.5 rounded-2xl bg-slate-800 text-slate-500 font-bold border border-slate-700/80 cursor-not-allowed whitespace-nowrap shrink-0 text-xs sm:text-sm";
+        claimBtn.innerHTML = `<i class="fa-solid fa-check text-emerald-500 mr-1"></i> Já Resgatado`;
+      }
+
+      let totalCount = 0;
+      grid.innerHTML = '';
+
+      PHONES_CATALOG.forEach(phone => {
+        const count = userData.inventory[phone.id] || 0;
+        totalCount += count;
+
+        if (count > 0) {
+          const card = document.createElement('div');
+          card.className = "glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg relative overflow-hidden group hover:border-slate-700 transition-all";
+          card.innerHTML = `
+            <div class="flex items-center gap-3.5">
+              <div class="w-12 h-12 rounded-xl bg-gradient-to-tr ${phone.color} flex items-center justify-center text-white text-xl shadow-md shrink-0">
+                <i class="fa-solid ${phone.icon}"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm">${phone.name}</h4>
+                <div class="text-xs text-cyan-400 font-semibold mt-0.5">+R$ ${phone.income}/s (cada)</div>
+              </div>
+            </div>
+            <div class="text-right shrink-0">
+              <span class="text-[10px] text-slate-400 uppercase font-bold block">Qtd</span>
+              <span class="text-lg font-black text-white">${count}x</span>
+            </div>
+          `;
+          grid.appendChild(card);
+        }
+      });
+
+      if (totalCount === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-12 text-center glass-card rounded-3xl border border-dashed border-slate-800">
+            <i class="fa-solid fa-mobile-screen text-4xl text-slate-700 mb-3"></i>
+            <p class="text-slate-400 text-xs sm:text-sm font-medium">Você ainda não possui nenhum celular em seu inventário.</p>
+            <p class="text-[11px] text-slate-500 mt-1">Resgate o Galaxy A01 Core grátis acima ou visite a loja!</p>
+          </div>
+        `;
+      }
+
+      document.getElementById('inventory-count').innerText = `${totalCount} Dispositivos`;
+    }
+
+    async function claimFreePhone() {
+      if (userData.claimedFree) return;
+
+      userData.claimedFree = true;
+      const currentA01 = userData.inventory['a01core'] || 0;
+      userData.inventory['a01core'] = currentA01 + 1;
+
+      await db.ref('/users/' + currentUser).update({
+        claimedFree: true,
+        inventory: userData.inventory
+      });
+
+      playSound('success');
+      showToast("Você resgatou o Samsung Galaxy A01 Core Grátis!", "success");
+    }
+
+    // ==========================================
+    // 7. SHOP PURCHASING LOGIC
+    // ==========================================
+    function renderShopTab() {
+      const grid = document.getElementById('shop-grid');
+      grid.innerHTML = '';
+
+      PHONES_CATALOG.forEach(phone => {
+        const canAfford = userData.money >= phone.price;
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-5 flex flex-col justify-between shadow-lg relative overflow-hidden hover:border-slate-700 transition-all";
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-4">
+              <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr ${phone.color} flex items-center justify-center text-white text-2xl shadow-lg">
+                <i class="fa-solid ${phone.icon}"></i>
+              </div>
+              <span class="text-xs font-bold px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
+                +R$ ${phone.income}/s
+              </span>
+            </div>
+
+            <h3 class="font-bold text-white text-base">${phone.name}</h3>
+            <p class="text-xs text-slate-400 mt-1">Aumente exponencialmente seu rendimento passivo com este aparelho!</p>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
+            <div>
+              <span class="text-[9px] uppercase font-bold text-slate-500 block">Preço</span>
+              <span class="text-sm sm:text-base font-black text-emerald-400">
+                ${phone.price === 0 ? 'GRÁTIS' : 'R$ ' + phone.price.toLocaleString('pt-BR')}
+              </span>
+            </div>
+
+            <button onclick="buyPhone('${phone.id}')" ${(!canAfford && phone.price > 0) ? 'disabled' : ''}
+              class="px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 ${
+                phone.price === 0
+                  ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                  : canAfford
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white shadow-md shadow-cyan-500/20'
+                    : 'bg-slate-800 text-slate-500 border border-slate-700/80 cursor-not-allowed'
+              }">
+              <i class="fa-solid fa-cart-shopping"></i>
+              <span>Comprar</span>
+            </button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    async function buyPhone(phoneId) {
+      const phone = PHONES_CATALOG.find(p => p.id === phoneId);
+      if (!phone) return;
+
+      if (phone.price === 0) {
+        claimFreePhone();
+        return;
+      }
+
+      if (userData.money < phone.price) {
+        showToast("Saldo insuficiente para adquirir este celular!", "error");
+        playSound('error');
+        return;
+      }
+
+      userData.money -= phone.price;
+      const count = userData.inventory[phone.id] || 0;
+      userData.inventory[phone.id] = count + 1;
+
+      await db.ref('/users/' + currentUser).update({
+        money: userData.money,
+        inventory: userData.inventory
+      });
+
+      playSound('money');
+      showToast(`Você comprou 1x ${phone.name}!`, "success");
+    }
+
+    // ==========================================
+    // 8. MULTIPLAYER TRADE REQUESTS
+    // ==========================================
+    async function handleSearchAndRequestTrade(e) {
+      e.preventDefault();
+      const query = document.getElementById('trade-search-input').value.trim().toLowerCase();
+      
+      if (!query) return;
+
+      if (query === currentUser) {
+        showToast("Você não pode enviar um pedido de troca para você mesmo!", "error");
+        return;
+      }
+
+      // Search matching username
+      const snap = await db.ref('/users').once('value');
+      const users = snap.val() || {};
+
+      const matchedUser = Object.keys(users).find(u => u.toLowerCase().startsWith(query) || u.toLowerCase() === query);
+
+      if (!matchedUser) {
+        showToast("Nenhum jogador encontrado com essa inicial ou nome!", "error");
+        playSound('error');
+        return;
+      }
+
+      const isOnline = users[matchedUser].online;
+      if (!isOnline) {
+        showToast(`O jogador @${matchedUser} está offline no momento.`, "error");
+        return;
+      }
+
+      sendTradeRequest(matchedUser);
+    }
+
+    async function sendTradeRequest(targetUser) {
+      const tradeId = `${currentUser}_${targetUser}_${Date.now()}`;
+      
+      const tradeObj = {
+        id: tradeId,
+        p1: currentUser,
+        p2: targetUser,
+        p1Offer: [],
+        p2Offer: [],
+        p1Accept: false,
+        p2Accept: false,
+        status: 'pending',
+        timestamp: Date.now()
+      };
+
+      await db.ref('/trades/' + tradeId).set(tradeObj);
+      showToast(`Pedido de troca enviado em segundo plano para @${targetUser}!`, "info");
+      playSound('notify');
+      document.getElementById('trade-search-input').value = '';
+    }
+
+    function renderTradeRequestsList(trades) {
+      const listContainer = document.getElementById('trade-requests-list');
+      const pendingBadge = document.getElementById('pending-trade-badge');
+      listContainer.innerHTML = '';
+
+      let hasPending = false;
+
+      Object.values(trades).forEach(trade => {
+        if (trade.p2 === currentUser && trade.status === 'pending') {
+          hasPending = true;
+          const card = document.createElement('div');
+          card.className = "bg-slate-900 border border-slate-800 rounded-2xl p-4 flex items-center justify-between gap-4";
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 flex items-center justify-center font-bold">
+                <i class="fa-solid fa-handshake"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-xs sm:text-sm">@${trade.p1} lhe enviou um pedido de troca!</h4>
+                <p class="text-[11px] text-slate-400">Aceite para abrir a sala de negociação ao vivo.</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-2">
+              <button onclick="acceptTradeRequest('${trade.id}')"
+                class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md">
+                Aceitar
+              </button>
+              <button onclick="rejectTradeRequest('${trade.id}')"
+                class="px-3 py-2 rounded-xl bg-red-950 hover:bg-red-900 text-red-400 border border-red-800 font-bold text-xs transition-all">
+                Recusar
+              </button>
+            </div>
+          `;
+          listContainer.appendChild(card);
+          playSound('notify');
+        }
+      });
+
+      if (hasPending) {
+        pendingBadge.classList.remove('hidden');
+      } else {
+        pendingBadge.classList.add('hidden');
+        listContainer.innerHTML = `<p class="text-xs text-slate-500 italic">Nenhum pedido de troca pendente no momento.</p>`;
+      }
+    }
+
+    async function acceptTradeRequest(tradeId) {
+      await db.ref('/trades/' + tradeId).update({ status: 'active' });
+      switchTab('trades');
+      playSound('success');
+    }
+
+    async function rejectTradeRequest(tradeId) {
+      await db.ref('/trades/' + tradeId).update({ status: 'rejected' });
+      playSound('notify');
+    }
+
+    // ==========================================
+    // 9. LIVE TRADE ROOM & DUPLICATE VALIDATION
+    // ==========================================
+    async function checkActiveTrade(trades) {
+      const active = Object.values(trades).find(t => 
+        (t.p1 === currentUser || t.p2 === currentUser) && t.status === 'active'
+      );
+
+      const room = document.getElementById('active-trade-room');
+
+      if (!active) {
+        room.classList.add('hidden');
+        activeTrade = null;
+        activeTradeId = null;
+        return;
+      }
+
+      activeTrade = active;
+      activeTradeId = active.id;
+      room.classList.remove('hidden');
+
+      const isP1 = active.p1 === currentUser;
+      const partnerName = isP1 ? active.p2 : active.p1;
+
+      document.getElementById('trade-partner-title').innerText = `Negociando com: @${partnerName}`;
+      document.getElementById('partner-offer-title').innerHTML = `<i class="fa-solid fa-user text-cyan-400"></i> Oferta de @${partnerName}`;
+
+      populateMySelect();
+
+      const myOffer = isP1 ? (active.p1Offer || []) : (active.p2Offer || []);
+      const partnerOffer = isP1 ? (active.p2Offer || []) : (active.p1Offer || []);
+
+      renderOfferedList('my-offered-phones-list', myOffer, true);
+      renderOfferedList('partner-offered-phones-list', partnerOffer, false);
+
+      const myAccept = isP1 ? active.p1Accept : active.p2Accept;
+      const partnerAccept = isP1 ? active.p2Accept : active.p1Accept;
+
+      const myStatus = document.getElementById('my-trade-status');
+      myStatus.innerText = myAccept ? 'Aceitou ✓' : 'Pendente';
+      myStatus.className = `text-[11px] px-2.5 py-0.5 rounded-full ${myAccept ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'}`;
+
+      const partnerStatus = document.getElementById('partner-trade-status');
+      partnerStatus.innerText = partnerAccept ? 'Aceitou ✓' : 'Pendente';
+      partnerStatus.className = `text-[11px] px-2.5 py-0.5 rounded-full ${partnerAccept ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'}`;
+
+      const p1Btn = document.getElementById('p1-accept-btn');
+      p1Btn.innerText = myAccept ? 'Cancelar Aceite' : 'Aceitar Troca';
+      p1Btn.className = myAccept
+        ? 'w-full mt-4 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-lg transition-all'
+        : 'w-full mt-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg transition-all';
+
+      // DUPLICATE VALIDATION ENGINE
+      await validateTradeDuplicates(partnerName, myOffer, partnerOffer);
+    }
+
+    function populateMySelect() {
+      const select = document.getElementById('my-trade-select');
+      select.innerHTML = '<option value="">-- Selecione para Adicionar --</option>';
+
+      PHONES_CATALOG.forEach(phone => {
+        const count = userData.inventory[phone.id] || 0;
+        if (count > 0) {
+          const opt = document.createElement('option');
+          opt.value = phone.id;
+          opt.innerText = `${phone.name} (Possui ${count}x)`;
+          select.appendChild(opt);
+        }
+      });
+    }
+
+    async function addPhoneToMyOffer(phoneId) {
+      if (!phoneId || !activeTrade) return;
+
+      const isP1 = activeTrade.p1 === currentUser;
+      const myOffer = isP1 ? (activeTrade.p1Offer || []) : (activeTrade.p2Offer || []);
+
+      myOffer.push(phoneId);
+
+      const updateData = {};
+      if (isP1) {
+        updateData.p1Offer = myOffer;
+        updateData.p1Accept = false;
+      } else {
+        updateData.p2Offer = myOffer;
+        updateData.p2Accept = false;
+      }
+
+      await db.ref('/trades/' + activeTradeId).update(updateData);
+      document.getElementById('my-trade-select').value = '';
+    }
+
+    async function removePhoneFromMyOffer(index) {
+      if (!activeTrade) return;
+
+      const isP1 = activeTrade.p1 === currentUser;
+      const myOffer = isP1 ? (activeTrade.p1Offer || []) : (activeTrade.p2Offer || []);
+
+      myOffer.splice(index, 1);
+
+      const updateData = {};
+      if (isP1) {
+        updateData.p1Offer = myOffer;
+        updateData.p1Accept = false;
+      } else {
+        updateData.p2Offer = myOffer;
+        updateData.p2Accept = false;
+      }
+
+      await db.ref('/trades/' + activeTradeId).update(updateData);
+    }
+
+    function renderOfferedList(containerId, list, isMine) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (!list || list.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-500 italic block text-center py-8">Nenhum celular selecionado</span>`;
+        return;
+      }
+
+      list.forEach((phoneId, idx) => {
+        const phone = PHONES_CATALOG.find(p => p.id === phoneId);
+        if (!phone) return;
+
+        const item = document.createElement('div');
+        item.className = "bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between text-xs";
+        item.innerHTML = `
+          <div class="flex items-center gap-2">
+            <i class="fa-solid ${phone.icon} text-cyan-400"></i>
+            <span class="font-bold text-white">${phone.name}</span>
+          </div>
+          ${isMine ? `
+            <button onclick="removePhoneFromMyOffer(${idx})" class="text-red-400 hover:text-red-300 p-1">
+              <i class="fa-solid fa-trash-can"></i>
+            </button>
+          ` : ''}
+        `;
+        container.appendChild(item);
+      });
+    }
+
+    async function validateTradeDuplicates(partnerName, myOffer, partnerOffer) {
+      const errorBox = document.getElementById('trade-duplicate-error');
+      const p1Btn = document.getElementById('p1-accept-btn');
+
+      // Fetch partner inventory
+      const partnerSnap = await db.ref('/users/' + partnerName + '/inventory').once('value');
+      const partnerInventory = partnerSnap.val() || {};
+
+      let hasDuplicate = false;
+
+      // 1. Check if I already own any phone offered by partner
+      partnerOffer.forEach(phoneId => {
+        if ((userData.inventory[phoneId] || 0) > 0) {
+          hasDuplicate = true;
+        }
+      });
+
+      // 2. Check if partner already owns any phone offered by me
+      myOffer.forEach(phoneId => {
+        if ((partnerInventory[phoneId] || 0) > 0) {
+          hasDuplicate = true;
+        }
+      });
+
+      if (hasDuplicate) {
+        errorBox.classList.remove('hidden');
+        p1Btn.disabled = true;
+        p1Btn.classList.add('opacity-50', 'cursor-not-allowed');
+      } else {
+        errorBox.classList.add('hidden');
+        p1Btn.disabled = false;
+        p1Btn.classList.remove('opacity-50', 'cursor-not-allowed');
+      }
+    }
+
+    // ==========================================
+    // 10. ATOMIC TRADE EXECUTION
+    // ==========================================
+    async function toggleAcceptTrade() {
+      if (!activeTrade) return;
+
+      const isP1 = activeTrade.p1 === currentUser;
+      const currentAccept = isP1 ? activeTrade.p1Accept : activeTrade.p2Accept;
+
+      const updateData = {};
+      if (isP1) {
+        updateData.p1Accept = !currentAccept;
+      } else {
+        updateData.p2Accept = !currentAccept;
+      }
+
+      await db.ref('/trades/' + activeTradeId).update(updateData);
+
+      // Check if BOTH accepted
+      const bothAccepted = isP1 
+        ? (!currentAccept && activeTrade.p2Accept)
+        : (!currentAccept && activeTrade.p1Accept);
+
+      if (bothAccepted) {
+        finalizeTradeTransaction();
+      }
+    }
+
+    async function finalizeTradeTransaction() {
+      if (!activeTrade) return;
+
+      const p1 = activeTrade.p1;
+      const p2 = activeTrade.p2;
+
+      // Fresh Inventories
+      const p1Snap = await db.ref('/users/' + p1 + '/inventory').once('value');
+      const p2Snap = await db.ref('/users/' + p2 + '/inventory').once('value');
+
+      const p1Inv = p1Snap.val() || {};
+      const p2Inv = p2Snap.val() || {};
+
+      const p1Offer = activeTrade.p1Offer || [];
+      const p2Offer = activeTrade.p2Offer || [];
+
+      // Transfer P1 -> P2
+      p1Offer.forEach(phoneId => {
+        if (p1Inv[phoneId] > 0) p1Inv[phoneId]--;
+        p2Inv[phoneId] = (p2Inv[phoneId] || 0) + 1;
+      });
+
+      // Transfer P2 -> P1
+      p2Offer.forEach(phoneId => {
+        if (p2Inv[phoneId] > 0) p2Inv[phoneId]--;
+        p1Inv[phoneId] = (p1Inv[phoneId] || 0) + 1;
+      });
+
+      // Save updated inventories
+      await db.ref('/users/' + p1 + '/inventory').set(p1Inv);
+      await db.ref('/users/' + p2 + '/inventory').set(p2Inv);
+
+      // Complete trade
+      await db.ref('/trades/' + activeTradeId).update({ status: 'completed' });
+
+      playSound('success');
+      showToast("Troca concluída com sucesso! Os celulares foram transferidos.", "success");
+    }
+
+    async function cancelTrade() {
+      if (!activeTradeId) return;
+      await db.ref('/trades/' + activeTradeId).update({ status: 'cancelled' });
+      showToast("Troca cancelada.", "info");
+    }
+
+    // ==========================================
+    // 11. ONLINE PLAYERS LIST
+    // ==========================================
+    function renderOnlinePlayers(users) {
+      const grid = document.getElementById('online-players-list');
+      grid.innerHTML = '';
+
+      let count = 0;
+
+      Object.keys(users).forEach(u => {
+        if (u !== currentUser) {
+          count++;
+          const isOnline = users[u].online === true;
+          const userMoney = users[u].money || 0;
+
+          const card = document.createElement('div');
+          card.className = "glass-card rounded-2xl p-4 flex items-center justify-between shadow-md";
+          card.innerHTML = `
+            <div class="flex items-center gap-3">
+              <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 font-extrabold text-sm">
+                ${u.charAt(0).toUpperCase()}
+              </div>
+              <div>
+                <h4 class="font-bold text-white text-sm">@${u}</h4>
+                <div class="flex items-center gap-2 mt-0.5">
+                  <span class="inline-flex items-center gap-1 text-[10px] ${isOnline ? 'text-emerald-400' : 'text-slate-500'} font-semibold">
+                    <span class="w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-slate-600'}"></span>
+                    ${isOnline ? 'Online' : 'Offline'}
+                  </span>
+                  <span class="text-[10px] text-slate-500">• R$ ${userMoney.toLocaleString('pt-BR')}</span>
+                </div>
+              </div>
+            </div>
+
+            ${isOnline ? `
+              <button onclick="sendTradeRequest('${u}')"
+                class="px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white border border-cyan-500/30 font-bold text-xs transition-all flex items-center gap-1">
+                <i class="fa-solid fa-handshake"></i>
+                <span>Trocar</span>
+              </button>
+            ` : ''}
+          `;
+          grid.appendChild(card);
+        }
+      });
+
+      if (count === 0) {
+        grid.innerHTML = `<p class="text-xs text-slate-500 italic col-span-full">Nenhum outro jogador cadastrado ainda.</p>`;
+      }
+    }
+  </script>
+</body>
+</html>
+```
