@@ -368,7 +368,7 @@
           </div>
 
           <!-- Trade Split Screen -->
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
             
             <!-- Side 1: My Offer -->
             <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col justify-between">
@@ -428,6 +428,31 @@
             </div>
 
           </div>
+
+          <!-- LIVE CHAT / DM SYSTEM INSIDE TRADE ROOM -->
+          <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4 flex flex-col">
+            <h4 class="font-bold text-slate-200 text-xs sm:text-sm mb-2 flex items-center gap-2">
+              <i class="fa-solid fa-comments text-cyan-400"></i> <span data-i18n="tradeChatTitle">Live Trade Chat (DM)</span>
+            </h4>
+            
+            <!-- Messages Container -->
+            <div id="trade-chat-messages" class="h-36 overflow-y-auto bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2 mb-3 text-xs">
+              <span class="text-slate-500 italic block text-center" data-i18n="chatStart">Send a message to your trading partner...</span>
+            </div>
+
+            <!-- Chat Input Form -->
+            <form onsubmit="sendTradeChatMessage(event)" class="flex gap-2">
+              <input type="text" id="trade-chat-input" required autocomplete="off"
+                class="w-full bg-slate-950 border border-slate-800 text-white px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 placeholder-slate-500"
+                placeholder="Type your message here..." data-i18n-placeholder="chatPlaceholder">
+              <button type="submit"
+                class="px-5 py-2.5 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shrink-0 shadow-md shadow-cyan-600/20 transition-all flex items-center gap-1.5">
+                <i class="fa-solid fa-paper-plane"></i>
+                <span data-i18n="sendChat">Send</span>
+              </button>
+            </form>
+          </div>
+
         </div>
 
         <!-- Incoming Received Trade Requests List -->
@@ -584,6 +609,10 @@
         noPlayers: "No other registered players yet.",
         tradeBtn: "Trade",
         qty: "Qty",
+        tradeChatTitle: "Live Trade Chat (DM)",
+        chatStart: "Send a message to your trading partner...",
+        chatPlaceholder: "Type your message here...",
+        sendChat: "Send",
         welcomeBack: "Welcome back, @{username}!",
         accountCreated: "Account created! Session saved automatically.",
         wrongPassword: "Incorrect password for this account!",
@@ -660,6 +689,10 @@
         noPlayers: "Nenhum outro jogador cadastrado ainda.",
         tradeBtn: "Trocar",
         qty: "Qtd",
+        tradeChatTitle: "Chat da Negociação (DM)",
+        chatStart: "Envie uma mensagem para o seu parceiro de troca...",
+        chatPlaceholder: "Digite sua mensagem aqui...",
+        sendChat: "Enviar",
         welcomeBack: "Bem-vindo de volta, @{username}!",
         accountCreated: "Conta criada! Sessão salva automaticamente.",
         wrongPassword: "Senha incorreta para esta conta!",
@@ -736,6 +769,10 @@
         noPlayers: "Aún no hay otros jugadores registrados.",
         tradeBtn: "Intercambiar",
         qty: "Cant",
+        tradeChatTitle: "Chat de Intercambio (DM)",
+        chatStart: "Envía un mensaje a tu compañero...",
+        chatPlaceholder: "Escribe tu mensaje...",
+        sendChat: "Enviar",
         welcomeBack: "¡Bienvenido de nuevo, @{username}!",
         accountCreated: "¡Cuenta creada y guardada automáticamente!",
         wrongPassword: "¡Contraseña incorrecta!",
@@ -812,6 +849,10 @@
         noPlayers: "Aucun autre joueur inscrit pour le moment.",
         tradeBtn: "Échanger",
         qty: "Qté",
+        tradeChatTitle: "Chat d'Échange (DM)",
+        chatStart: "Envoyez un message...",
+        chatPlaceholder: "Écrivez votre message...",
+        sendChat: "Envoyer",
         welcomeBack: "Bon retour, @{username} !",
         accountCreated: "Compte créé et sauvegardé !",
         wrongPassword: "Mot de passe incorrect !",
@@ -888,6 +929,10 @@
         noPlayers: "Noch keine anderen Spieler registriert.",
         tradeBtn: "Handeln",
         qty: "Menge",
+        tradeChatTitle: "Handels-Chat (DM)",
+        chatStart: "Sende eine Nachricht...",
+        chatPlaceholder: "Nachricht eingeben...",
+        sendChat: "Senden",
         welcomeBack: "Willkommen zurück, @{username}!",
         accountCreated: "Konto erstellt und gespeichert!",
         wrongPassword: "Falsches Passwort!",
@@ -964,6 +1009,10 @@
         noPlayers: "Nessun altro giocatore registrato.",
         tradeBtn: "Scambia",
         qty: "Qtà",
+        tradeChatTitle: "Chat Scambio (DM)",
+        chatStart: "Invia un messaggio...",
+        chatPlaceholder: "Scrivi un messaggio...",
+        sendChat: "Invia",
         welcomeBack: "Bentornato, @{username}!",
         accountCreated: "Account creato e salvato!",
         wrongPassword: "Password errata!",
@@ -1040,6 +1089,10 @@
         noPlayers: "まだ他のプレイヤーはいません。",
         tradeBtn: "トレード",
         qty: "数量",
+        tradeChatTitle: "トレードチャット (DM)",
+        chatStart: "メッセージを送信しましょう...",
+        chatPlaceholder: "メッセージを入力...",
+        sendChat: "送信",
         welcomeBack: "おかえりなさい、@{username}さん！",
         accountCreated: "アカウントを作成しました！自動保存されました。",
         wrongPassword: "パスワードが正しくありません！",
@@ -1905,7 +1958,7 @@
     }
 
     // ==========================================
-    // 10. LIVE TRADE ROOM & DUPLICATE VALIDATION ENGINE
+    // 10. LIVE TRADE ROOM & CHAT (DM) SYSTEM
     // ==========================================
     async function checkActiveTrade(trades) {
       const active = Object.values(trades).find(t => 
@@ -1938,6 +1991,7 @@
 
       renderOfferedList('my-offered-phones-list', myOffer, true);
       renderOfferedList('partner-offered-phones-list', partnerOffer, false);
+      renderTradeChatMessages(active.messages || {});
 
       const myAccept = isP1 ? active.p1Accept : active.p2Accept;
       const partnerAccept = isP1 ? active.p2Accept : active.p1Accept;
@@ -1957,6 +2011,54 @@
         : 'w-full mt-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2';
 
       await validateTradeDuplicates(partnerName, myOffer, partnerOffer);
+    }
+
+    async function sendTradeChatMessage(e) {
+      e.preventDefault();
+      const input = document.getElementById('trade-chat-input');
+      const text = input.value.trim();
+      if (!text || !activeTradeId) return;
+
+      const messageObj = {
+        sender: currentUser,
+        text: text,
+        timestamp: Date.now()
+      };
+
+      await db.ref(`/trades/${activeTradeId}/messages`).push(messageObj);
+      input.value = '';
+      playSound('notify');
+    }
+
+    function renderTradeChatMessages(messagesObj) {
+      const container = document.getElementById('trade-chat-messages');
+      container.innerHTML = '';
+
+      const messages = Object.values(messagesObj);
+      if (messages.length === 0) {
+        container.innerHTML = `<span class="text-slate-500 italic block text-center py-6">${t('chatStart')}</span>`;
+        return;
+      }
+
+      messages.forEach(msg => {
+        const isMe = msg.sender === currentUser;
+        const msgDiv = document.createElement('div');
+        msgDiv.className = `flex flex-col ${isMe ? 'items-end' : 'items-start'}`;
+        msgDiv.innerHTML = `
+          <div class="text-[10px] text-slate-400 mb-0.5 font-bold">@${msg.sender}</div>
+          <div class="px-3 py-2 rounded-xl max-w-[80%] text-xs ${isMe ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-slate-800 text-slate-200 rounded-bl-none'}">
+            ${escapeHtml(msg.text)}
+          </div>
+        `;
+        container.appendChild(msgDiv);
+      });
+
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function escapeHtml(text) {
+      const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+      return text.replace(/[&<>"']/g, function(m) { return map[m]; });
     }
 
     function populateMySelect() {
@@ -2197,4 +2299,3 @@
   </script>
 </body>
 </html>
-
