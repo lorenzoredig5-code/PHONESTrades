@@ -1490,7 +1490,6 @@
         if (snap.exists()) {
           globalS26Stock = snap.val();
         } else {
-          // Initialize if not present
           globalS26Stock = 100;
           db.ref('/globalStock/s26ultra').set(100);
         }
@@ -1732,7 +1731,6 @@
       };
 
       if (phone.id === 's26ultra') {
-        // Decrement global stock atomically
         const newStock = Math.max(0, globalS26Stock - 1);
         updates['/globalStock/s26ultra'] = newStock;
       }
@@ -1958,7 +1956,6 @@
         ? 'w-full mt-4 py-3 rounded-xl bg-amber-600 hover:bg-amber-500 text-white font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2'
         : 'w-full mt-4 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg transition-all flex items-center justify-center gap-2';
 
-      // DUPLICATE VALIDATION ENGINE
       await validateTradeDuplicates(partnerName, myOffer, partnerOffer);
     }
 
@@ -2057,14 +2054,12 @@
 
       let hasDuplicate = false;
 
-      // Check if I already own any phone offered by partner
       partnerOffer.forEach(phoneId => {
         if ((userData.inventory[phoneId] || 0) > 0) {
           hasDuplicate = true;
         }
       });
 
-      // Check if partner already owns any phone offered by me
       myOffer.forEach(phoneId => {
         if ((partnerInventory[phoneId] || 0) > 0) {
           hasDuplicate = true;
@@ -2124,13 +2119,11 @@
       const p1Offer = activeTrade.p1Offer || [];
       const p2Offer = activeTrade.p2Offer || [];
 
-      // Transfer P1 -> P2
       p1Offer.forEach(phoneId => {
         if (p1Inv[phoneId] > 0) p1Inv[phoneId]--;
         p2Inv[phoneId] = (p2Inv[phoneId] || 0) + 1;
       });
 
-      // Transfer P2 -> P1
       p2Offer.forEach(phoneId => {
         if (p2Inv[phoneId] > 0) p2Inv[phoneId]--;
         p1Inv[phoneId] = (p1Inv[phoneId] || 0) + 1;
