@@ -313,17 +313,40 @@
         </div>
       </section>
 
-      <!-- TAB 2: PHONE SHOP -->
+      <!-- TAB 2: PHONE SHOP & BRANDS -->
       <section id="tab-shop" class="tab-content hidden space-y-6">
-        <div>
-          <h2 class="text-xl font-black text-white" data-i18n="shopTitle">Phone Catalog</h2>
-          <p class="text-slate-400 text-xs mt-1" data-i18n="shopSubtitle">Buy new devices to boost your passive income per second!</p>
+        
+        <!-- SHOP VIEW MODE 1: BRAND SELECTOR MENU -->
+        <div id="shop-brand-view" class="space-y-6">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div>
+              <h2 class="text-xl font-black text-white" data-i18n="shopTitle">Phone Catalog & Brands</h2>
+              <p class="text-slate-400 text-xs mt-1" data-i18n="shopSubtitle">Select a brand below to explore their lineup of phones and boost your income!</p>
+            </div>
+          </div>
+
+          <!-- Brand Cards Grid -->
+          <div id="brands-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+            <!-- Populated dynamically -->
+          </div>
         </div>
 
-        <!-- Shop Grid -->
-        <div id="shop-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-          <!-- Populated dynamically -->
+        <!-- SHOP VIEW MODE 2: BRAND PHONES LIST -->
+        <div id="shop-phones-view" class="hidden space-y-6">
+          <div class="flex items-center justify-between">
+            <button onclick="backToBrandsMenu()" class="px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-slate-300 border border-slate-700/80 text-xs font-bold transition-all flex items-center gap-2">
+              <i class="fa-solid fa-arrow-left"></i>
+              <span data-i18n="backToBrands">Back to Brands</span>
+            </button>
+            <h3 id="selected-brand-title" class="text-lg font-black text-cyan-400">Brand Name</h3>
+          </div>
+
+          <!-- Specific Brand Phones Grid -->
+          <div id="brand-phones-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+            <!-- Populated dynamically -->
+          </div>
         </div>
+
       </section>
 
       <!-- TAB 3: REALTIME TRADING SYSTEM -->
@@ -575,8 +598,9 @@
         devicesCount: "{count} Devices",
         noPhonesInInventory: "You don't have any phones in your inventory yet.",
         noPhonesSub: "Claim the free Galaxy A01 Core above or visit the shop!",
-        shopTitle: "Phone Catalog",
-        shopSubtitle: "Buy new devices to boost your passive income per second!",
+        shopTitle: "Phone Catalog & Brands",
+        shopSubtitle: "Select a brand below to explore their lineup of phones and boost your income!",
+        backToBrands: "Back to Brands",
         buy: "Buy",
         free: "FREE",
         each: "each",
@@ -655,8 +679,9 @@
         devicesCount: "{count} Dispositivos",
         noPhonesInInventory: "Você ainda não possui nenhum celular em seu inventário.",
         noPhonesSub: "Resgate o Galaxy A01 Core grátis acima ou visite a loja!",
-        shopTitle: "Catálogo de Celulares",
-        shopSubtitle: "Adquira novos aparelhos para acelerar seu rendimento passivo!",
+        shopTitle: "Catálogo & Marcas",
+        shopSubtitle: "Selecione uma marca abaixo para explorar os modelos de celulares disponíveis!",
+        backToBrands: "Voltar para Marcas",
         buy: "Comprar",
         free: "GRÁTIS",
         each: "cada",
@@ -735,8 +760,9 @@
         devicesCount: "{count} Dispositivos",
         noPhonesInInventory: "Aún no tienes teléfonos en tu inventario.",
         noPhonesSub: "¡Reclama el Galaxy A01 Core gratis arriba o visita la tienda!",
-        shopTitle: "Catálogo de Teléfonos",
-        shopSubtitle: "¡Compra nuevos dispositivos para aumentar tus ingresos pasivos!",
+        shopTitle: "Catálogo y Marcas",
+        shopSubtitle: "¡Selecciona una marca abajo para explorar los teléfonos disponibles!",
+        backToBrands: "Volver a Marcas",
         buy: "Comprar",
         free: "GRATIS",
         each: "c/u",
@@ -815,8 +841,9 @@
         devicesCount: "{count} Appareils",
         noPhonesInInventory: "Vous n'avez pas encore de téléphone dans votre inventaire.",
         noPhonesSub: "Obtenez le Galaxy A01 Core gratuit ci-dessus ou visitez la boutique !",
-        shopTitle: "Catalogue de Téléphones",
-        shopSubtitle: "Achetez de nouveaux téléphones pour augmenter vos revenus passifs !",
+        shopTitle: "Catalogue & Marques",
+        shopSubtitle: "Sélectionnez une marque pour voir les téléphones disponibles !",
+        backToBrands: "Retour aux Marques",
         buy: "Acheter",
         free: "GRATUIT",
         each: "unité",
@@ -895,8 +922,9 @@
         devicesCount: "{count} Geräte",
         noPhonesInInventory: "Du hast noch keine Handys im Inventar.",
         noPhonesSub: "Hole dir das kostenlose Galaxy A01 Core oben oder besuche den Shop!",
-        shopTitle: "Handy-Katalog",
-        shopSubtitle: "Kaufe neue Geräte, um dein passives Einkommen zu steigern!",
+        shopTitle: "Katalog & Marken",
+        shopSubtitle: "Wähle eine Marke aus, um die Handys zu entdecken!",
+        backToBrands: "Zurück zu Marken",
         buy: "Kaufen",
         free: "GRATIS",
         each: "stk",
@@ -975,8 +1003,9 @@
         devicesCount: "{count} Dispositivi",
         noPhonesInInventory: "Non hai ancora nessun telefono nel tuo inventario.",
         noPhonesSub: "Riscatta il Galaxy A01 Core gratis qui sopra o visita il negozio!",
-        shopTitle: "Catalogo Telefoni",
-        shopSubtitle: "Acquista nuovi modelli per aumentare il tuo guadagno passivo!",
+        shopTitle: "Catalogo & Marche",
+        shopSubtitle: "Seleziona una marca per scoprire i telefoni disponibili!",
+        backToBrands: "Torna alle Marche",
         buy: "Acquista",
         free: "GRATIS",
         each: "cad",
@@ -1055,8 +1084,9 @@
         devicesCount: "{count} 台",
         noPhonesInInventory: "まだスマホを所有していません。",
         noPhonesSub: "上の無料Galaxy A01 Coreを受け取るか、ショップを覗いてみましょう！",
-        shopTitle: "スマホカタログ",
-        shopSubtitle: "新しい端末を購入して毎秒の不労所得を増やしましょう！",
+        shopTitle: "カタログ & ブランド",
+        shopSubtitle: "ブランドを選択してスマホを確認しましょう！",
+        backToBrands: "ブランド一覧に戻る",
         buy: "購入",
         free: "無料",
         each: "個",
@@ -1166,36 +1196,82 @@
     const db = firebase.database();
 
     // ==========================================
-    // 3. PHONE MODELS CATALOG (Expanded with 20 new models)
+    // 3. PHONE BRANDS & CATALOG
     // ==========================================
+    const PHONE_BRANDS = [
+      { id: "samsung", name: "Samsung", icon: "fa-mobile-screen", color: "from-blue-600 to-indigo-700" },
+      { id: "apple", name: "Apple", icon: "fa-apple", color: "from-slate-700 to-slate-900" },
+      { id: "xiaomi", name: "Xiaomi", icon: "fa-bolt", color: "from-orange-500 to-amber-600" },
+      { id: "motorola", name: "Motorola", icon: "fa-mobile", color: "from-cyan-600 to-blue-800" },
+      { id: "huawei", name: "Huawei", icon: "fa-signal", color: "from-red-600 to-rose-800" },
+      { id: "google", name: "Google Pixel", icon: "fa-g", color: "from-blue-500 to-teal-600" },
+      { id: "oneplus", name: "OnePlus", icon: "fa-1", color: "from-red-500 to-orange-700" },
+      { id: "asus", name: "Asus ROG", icon: "fa-gamepad", color: "from-purple-600 to-indigo-900" }
+    ];
+
     const PHONES_CATALOG = [
-      { id: "a01core", name: "Samsung Galaxy A01 Core", price: 0, income: 1, color: "from-blue-500 to-indigo-600", icon: "fa-mobile-screen" },
-      { id: "a10", name: "Samsung Galaxy A10", price: 300, income: 10, color: "from-cyan-500 to-blue-600", icon: "fa-mobile-screen-button" },
-      { id: "a26", name: "Samsung Galaxy A26", price: 2000, income: 150, color: "from-teal-500 to-emerald-600", icon: "fa-mobile" },
-      { id: "a34", name: "Samsung Galaxy A34", price: 800, income: 35, color: "from-amber-500 to-orange-600", icon: "fa-mobile-screen-button" },
-      { id: "a56", name: "Samsung Galaxy A56", price: 3000, income: 200, color: "from-purple-500 to-indigo-600", icon: "fa-mobile-screen" },
-      { id: "s26ultra", name: "Samsung Galaxy S26 Ultra", price: 6000, income: 10000, color: "from-rose-500 to-red-600", icon: "fa-mobile" },
-      // 20 New Phones Added Below
-      { id: "a12", name: "Samsung Galaxy A12", price: 450, income: 15, color: "from-sky-500 to-blue-700", icon: "fa-mobile-screen" },
-      { id: "a14", name: "Samsung Galaxy A14", price: 600, income: 22, color: "from-blue-600 to-cyan-700", icon: "fa-mobile" },
-      { id: "a22", name: "Samsung Galaxy A22", price: 1100, income: 55, color: "from-teal-600 to-cyan-800", icon: "fa-mobile-screen-button" },
-      { id: "a32", name: "Samsung Galaxy A32", price: 1500, income: 90, color: "from-emerald-600 to-teal-800", icon: "fa-mobile" },
-      { id: "a52", name: "Samsung Galaxy A52", price: 2400, income: 170, color: "from-indigo-500 to-purple-700", icon: "fa-mobile-screen" },
-      { id: "a72", name: "Samsung Galaxy A72", price: 3500, income: 250, color: "from-violet-600 to-fuchsia-800", icon: "fa-mobile-screen-button" },
-      { id: "s21", name: "Samsung Galaxy S21", price: 4200, income: 340, color: "from-pink-500 to-rose-700", icon: "fa-mobile" },
-      { id: "s21plus", name: "Samsung Galaxy S21+", price: 4800, income: 420, color: "from-rose-600 to-red-800", icon: "fa-mobile-screen" },
-      { id: "s21ultra", name: "Samsung Galaxy S21 Ultra", price: 5500, income: 550, color: "from-red-600 to-amber-800", icon: "fa-mobile" },
-      { id: "s22", name: "Samsung Galaxy S22", price: 6500, income: 700, color: "from-amber-600 to-yellow-700", icon: "fa-mobile-screen-button" },
-      { id: "s22ultra", name: "Samsung Galaxy S22 Ultra", price: 7800, income: 900, color: "from-orange-600 to-red-700", icon: "fa-mobile" },
-      { id: "s23", name: "Samsung Galaxy S23", price: 9200, income: 1200, color: "from-emerald-500 to-teal-700", icon: "fa-mobile-screen" },
-      { id: "s23ultra", name: "Samsung Galaxy S23 Ultra", price: 11000, income: 1600, color: "from-cyan-600 to-blue-800", icon: "fa-mobile-screen-button" },
-      { id: "s24", name: "Samsung Galaxy S24", price: 13500, income: 2200, color: "from-blue-700 to-indigo-900", icon: "fa-mobile" },
-      { id: "s24ultra", name: "Samsung Galaxy S24 Ultra", price: 16000, income: 3000, color: "from-purple-700 to-pink-900", icon: "fa-mobile-screen" },
-      { id: "zfold5", name: "Samsung Galaxy Z Fold5", price: 19000, income: 4000, color: "from-fuchsia-600 to-purple-900", icon: "fa-mobile-screen-button" },
-      { id: "zflip5", name: "Samsung Galaxy Z Flip5", price: 17500, income: 3500, color: "from-pink-600 to-rose-900", icon: "fa-mobile" },
-      { id: "s25", name: "Samsung Galaxy S25", price: 22000, income: 5000, color: "from-teal-500 to-emerald-900", icon: "fa-mobile-screen" },
-      { id: "s25ultra", name: "Samsung Galaxy S25 Ultra", price: 26000, income: 6800, color: "from-rose-600 to-red-950", icon: "fa-mobile-screen-button" },
-      { id: "zfold6", name: "Samsung Galaxy Z Fold6", price: 32000, income: 9000, color: "from-indigo-600 to-slate-900", icon: "fa-mobile" }
+      // Samsung
+      { id: "a01core", brand: "samsung", name: "Samsung Galaxy A01 Core", price: 0, income: 1, color: "from-blue-500 to-indigo-600", icon: "fa-mobile-screen" },
+      { id: "a10", brand: "samsung", name: "Samsung Galaxy A10", price: 300, income: 10, color: "from-cyan-500 to-blue-600", icon: "fa-mobile-screen-button" },
+      { id: "a12", brand: "samsung", name: "Samsung Galaxy A12", price: 450, income: 15, color: "from-sky-500 to-blue-700", icon: "fa-mobile-screen" },
+      { id: "a14", brand: "samsung", name: "Samsung Galaxy A14", price: 600, income: 22, color: "from-blue-600 to-cyan-700", icon: "fa-mobile" },
+      { id: "a22", brand: "samsung", name: "Samsung Galaxy A22", price: 1100, income: 55, color: "from-teal-600 to-cyan-800", icon: "fa-mobile-screen-button" },
+      { id: "a26", brand: "samsung", name: "Samsung Galaxy A26", price: 2000, income: 150, color: "from-teal-500 to-emerald-600", icon: "fa-mobile" },
+      { id: "a32", brand: "samsung", name: "Samsung Galaxy A32", price: 1500, income: 90, color: "from-emerald-600 to-teal-800", icon: "fa-mobile" },
+      { id: "a34", brand: "samsung", name: "Samsung Galaxy A34", price: 800, income: 35, color: "from-amber-500 to-orange-600", icon: "fa-mobile-screen-button" },
+      { id: "a52", brand: "samsung", name: "Samsung Galaxy A52", price: 2400, income: 170, color: "from-indigo-500 to-purple-700", icon: "fa-mobile-screen" },
+      { id: "a56", brand: "samsung", name: "Samsung Galaxy A56", price: 3000, income: 200, color: "from-purple-500 to-indigo-600", icon: "fa-mobile-screen" },
+      { id: "a72", brand: "samsung", name: "Samsung Galaxy A72", price: 3500, income: 250, color: "from-violet-600 to-fuchsia-800", icon: "fa-mobile-screen-button" },
+      { id: "s21", brand: "samsung", name: "Samsung Galaxy S21", price: 4200, income: 340, color: "from-pink-500 to-rose-700", icon: "fa-mobile" },
+      { id: "s21plus", brand: "samsung", name: "Samsung Galaxy S21+", price: 4800, income: 420, color: "from-rose-600 to-red-800", icon: "fa-mobile-screen" },
+      { id: "s21ultra", brand: "samsung", name: "Samsung Galaxy S21 Ultra", price: 5500, income: 550, color: "from-red-600 to-amber-800", icon: "fa-mobile" },
+      { id: "s22", brand: "samsung", name: "Samsung Galaxy S22", price: 6500, income: 700, color: "from-amber-600 to-yellow-700", icon: "fa-mobile-screen-button" },
+      { id: "s22ultra", brand: "samsung", name: "Samsung Galaxy S22 Ultra", price: 7800, income: 900, color: "from-orange-600 to-red-700", icon: "fa-mobile" },
+      { id: "s23", brand: "samsung", name: "Samsung Galaxy S23", price: 9200, income: 1200, color: "from-emerald-500 to-teal-700", icon: "fa-mobile-screen" },
+      { id: "s23ultra", brand: "samsung", name: "Samsung Galaxy S23 Ultra", price: 11000, income: 1600, color: "from-cyan-600 to-blue-800", icon: "fa-mobile-screen-button" },
+      { id: "s24", brand: "samsung", name: "Samsung Galaxy S24", price: 13500, income: 2200, color: "from-blue-700 to-indigo-900", icon: "fa-mobile" },
+      { id: "s24ultra", brand: "samsung", name: "Samsung Galaxy S24 Ultra", price: 16000, income: 3000, color: "from-purple-700 to-pink-900", icon: "fa-mobile-screen" },
+      { id: "zfold5", brand: "samsung", name: "Samsung Galaxy Z Fold5", price: 19000, income: 4000, color: "from-fuchsia-600 to-purple-900", icon: "fa-mobile-screen-button" },
+      { id: "zflip5", brand: "samsung", name: "Samsung Galaxy Z Flip5", price: 17500, income: 3500, color: "from-pink-600 to-rose-900", icon: "fa-mobile" },
+      { id: "s25", brand: "samsung", name: "Samsung Galaxy S25", price: 22000, income: 5000, color: "from-teal-500 to-emerald-900", icon: "fa-mobile-screen" },
+      { id: "s25ultra", brand: "samsung", name: "Samsung Galaxy S25 Ultra", price: 26000, income: 6800, color: "from-rose-600 to-red-950", icon: "fa-mobile-screen-button" },
+      { id: "zfold6", brand: "samsung", name: "Samsung Galaxy Z Fold6", price: 32000, income: 9000, color: "from-indigo-600 to-slate-900", icon: "fa-mobile" },
+      { id: "s26ultra", brand: "samsung", name: "Samsung Galaxy S26 Ultra", price: 6000, income: 10000, color: "from-rose-500 to-red-600", icon: "fa-mobile" },
+
+      // Apple
+      { id: "iphone11", brand: "apple", name: "iPhone 11", price: 1200, income: 70, color: "from-slate-600 to-slate-800", icon: "fa-apple" },
+      { id: "iphone12", brand: "apple", name: "iPhone 12", price: 2500, income: 180, color: "from-blue-600 to-indigo-800", icon: "fa-apple" },
+      { id: "iphone13", brand: "apple", name: "iPhone 13 Pro", price: 5000, income: 450, color: "from-emerald-600 to-teal-900", icon: "fa-apple" },
+      { id: "iphone14", brand: "apple", name: "iPhone 14 Pro Max", price: 10000, income: 1400, color: "from-purple-600 to-slate-900", icon: "fa-apple" },
+      { id: "iphone15", brand: "apple", name: "iPhone 15 Pro Max", price: 18000, income: 3200, color: "from-amber-600 to-yellow-900", icon: "fa-apple" },
+      { id: "iphone16pro", brand: "apple", name: "iPhone 16 Pro Max", price: 28000, income: 7500, color: "from-indigo-700 to-slate-950", icon: "fa-apple" },
+
+      // Xiaomi
+      { id: "redmi9", brand: "xiaomi", name: "Redmi 9C", price: 250, income: 8, color: "from-orange-500 to-red-700", icon: "fa-bolt" },
+      { id: "redminote11", brand: "xiaomi", name: "Redmi Note 11", price: 900, income: 40, color: "from-amber-500 to-orange-700", icon: "fa-bolt" },
+      { id: "xiaomi13", brand: "xiaomi", name: "Xiaomi 13 Pro", price: 4500, income: 380, color: "from-orange-600 to-amber-900", icon: "fa-bolt" },
+      { id: "xiaomi14ultra", brand: "xiaomi", name: "Xiaomi 14 Ultra", price: 12500, income: 1900, color: "from-neutral-700 to-neutral-900", icon: "fa-bolt" },
+
+      // Motorola
+      { id: "motog20", brand: "motorola", name: "Moto G20", price: 350, income: 12, color: "from-cyan-600 to-blue-900", icon: "fa-mobile" },
+      { id: "motog52", brand: "motorola", name: "Moto G52", price: 850, income: 38, color: "from-blue-600 to-indigo-900", icon: "fa-mobile" },
+      { id: "motoedge40", brand: "motorola", name: "Moto Edge 40", price: 3800, income: 280, color: "from-emerald-600 to-cyan-900", icon: "fa-mobile" },
+
+      // Huawei
+      { id: "huaweip30", brand: "huawei", name: "Huawei P30 Pro", price: 1500, income: 95, color: "from-red-600 to-rose-900", icon: "fa-signal" },
+      { id: "huaweitermate", brand: "huawei", name: "Huawei Mate 60 Pro", price: 14000, income: 2400, color: "from-stone-700 to-stone-900", icon: "fa-signal" },
+
+      // Google Pixel
+      { id: "pixel6", brand: "google", name: "Google Pixel 6", price: 2000, income: 140, color: "from-teal-600 to-cyan-900", icon: "fa-g" },
+      { id: "pixel8pro", brand: "google", name: "Google Pixel 8 Pro", price: 8500, income: 1050, color: "from-blue-600 to-slate-900", icon: "fa-g" },
+
+      // OnePlus
+      { id: "oneplus9", brand: "oneplus", name: "OnePlus 9 Pro", price: 2800, income: 210, color: "from-red-500 to-neutral-900", icon: "fa-1" },
+      { id: "oneplus12", brand: "oneplus", name: "OnePlus 12", price: 9500, income: 1300, color: "from-emerald-600 to-neutral-950", icon: "fa-1" },
+
+      // Asus ROG
+      { id: "asusrog6", brand: "asus", name: "Asus ROG Phone 6", price: 11000, income: 1550, color: "from-purple-600 to-red-900", icon: "fa-gamepad" },
+      { id: "asusrog8", brand: "asus", name: "Asus ROG Phone 8 Pro", price: 24000, income: 5500, color: "from-indigo-700 to-red-950", icon: "fa-gamepad" }
     ];
 
     // ==========================================
@@ -1212,6 +1288,7 @@
     let activeTradeId = null;
     let idleInterval = null;
     let audioCtx = null;
+    let currentSelectedBrand = null;
     const STORAGE_KEY = 'phone_tycoon_user';
 
     function initAudio() {
@@ -1580,6 +1657,10 @@
         activeBtn.classList.remove('border-transparent', 'text-slate-400');
       }
 
+      if (tabName === 'shop') {
+        backToBrandsMenu();
+      }
+
       playSound('notify');
     }
 
@@ -1668,10 +1749,56 @@
     }
 
     function renderShopTab() {
-      const grid = document.getElementById('shop-grid');
+      const brandsGrid = document.getElementById('brands-grid');
+      brandsGrid.innerHTML = '';
+
+      PHONE_BRANDS.forEach(brand => {
+        const brandPhones = PHONES_CATALOG.filter(p => p.brand === brand.id);
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-5 flex flex-col items-center text-center shadow-lg hover:border-cyan-500/50 cursor-pointer transition-all transform hover:-translate-y-1 group";
+        card.onclick = () => selectBrand(brand.id);
+
+        card.innerHTML = `
+          <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr ${brand.color} flex items-center justify-center text-white text-3xl shadow-lg mb-3 group-hover:scale-110 transition-transform">
+            <i class="fa-solid ${brand.icon}"></i>
+          </div>
+          <h3 class="font-black text-white text-base">${brand.name}</h3>
+          <span class="text-xs text-slate-400 mt-1">${brandPhones.length} Models Available</span>
+        `;
+        brandsGrid.appendChild(card);
+      });
+
+      if (currentSelectedBrand) {
+        renderBrandPhonesList(currentSelectedBrand);
+      }
+    }
+
+    function selectBrand(brandId) {
+      currentSelectedBrand = brandId;
+      document.getElementById('shop-brand-view').classList.add('hidden');
+      document.getElementById('shop-phones-view').classList.remove('hidden');
+      renderBrandPhonesList(brandId);
+      playSound('notify');
+    }
+
+    function backToBrandsMenu() {
+      currentSelectedBrand = null;
+      document.getElementById('shop-phones-view').classList.add('hidden');
+      document.getElementById('shop-brand-view').classList.remove('hidden');
+    }
+
+    function renderBrandPhonesList(brandId) {
+      const brandObj = PHONE_BRANDS.find(b => b.id === brandId);
+      if (!brandObj) return;
+
+      document.getElementById('selected-brand-title').innerText = brandObj.name + " Models";
+
+      const grid = document.getElementById('brand-phones-grid');
       grid.innerHTML = '';
 
-      PHONES_CATALOG.forEach(phone => {
+      const brandPhones = PHONES_CATALOG.filter(p => p.brand === brandId);
+
+      brandPhones.forEach(phone => {
         const canAfford = userData.money >= phone.price;
         const isS26 = phone.id === 's26ultra';
         const outOfStock = isS26 && globalS26Stock <= 0;
@@ -1694,7 +1821,7 @@
             </div>
 
             <h3 class="font-bold text-white text-base">${phone.name}</h3>
-            <p class="text-xs text-slate-400 mt-1">${t('shopSubtitle')}</p>
+            <p class="text-xs text-slate-400 mt-1">Boosts passive income stream</p>
           </div>
 
           <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
