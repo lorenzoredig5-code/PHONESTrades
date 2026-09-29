@@ -196,7 +196,7 @@
         <!-- Right Header Elements -->
         <div class="flex items-center gap-2 sm:gap-3">
           
-          <!-- Admin Panel Button (Visible only to lorenzo) -->
+          <!-- Admin Panel Button -->
           <button id="admin-nav-btn" onclick="openAdminModal()" class="hidden items-center gap-1.5 px-3 py-2 rounded-xl bg-purple-950/80 hover:bg-purple-900 text-purple-300 border border-purple-800 text-xs font-bold transition-all shadow-lg shadow-purple-900/20">
             <i class="fa-solid fa-shield-halved"></i>
             <span>Admin</span>
@@ -225,7 +225,7 @@
             </div>
           </div>
 
-          <!-- Language Selector Button & Dropdown -->
+          <!-- Language Selector -->
           <div class="relative">
             <select id="header-lang-select" onchange="changeLanguage(this.value)"
               class="bg-slate-900 border border-slate-700 text-slate-200 text-xs rounded-xl px-2.5 py-2 focus:outline-none focus:border-cyan-500 cursor-pointer font-bold">
@@ -308,9 +308,7 @@
         </div>
 
         <!-- Inventory Grid -->
-        <div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="inventory-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"></div>
       </section>
 
       <!-- TAB 2: PHONE SHOP & BRANDS -->
@@ -326,9 +324,7 @@
           </div>
 
           <!-- Brand Cards Grid -->
-          <div id="brands-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-            <!-- Populated dynamically -->
-          </div>
+          <div id="brands-grid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4"></div>
         </div>
 
         <!-- SHOP VIEW MODE 2: BRAND PHONES LIST -->
@@ -341,10 +337,7 @@
             <h3 id="selected-brand-title" class="text-lg font-black text-cyan-400">Brand Name</h3>
           </div>
 
-          <!-- Specific Brand Phones Grid -->
-          <div id="brand-phones-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-            <!-- Populated dynamically -->
-          </div>
+          <div id="brand-phones-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5"></div>
         </div>
 
       </section>
@@ -458,12 +451,10 @@
               <i class="fa-solid fa-comments text-cyan-400"></i> <span data-i18n="tradeChatTitle">Live Trade Chat (DM)</span>
             </h4>
             
-            <!-- Messages Container -->
             <div id="trade-chat-messages" class="h-36 overflow-y-auto bg-slate-950/80 p-3 rounded-xl border border-slate-800 space-y-2 mb-3 text-xs">
               <span class="text-slate-500 italic block text-center" data-i18n="chatStart">Send a message to your trading partner...</span>
             </div>
 
-            <!-- Chat Input Form -->
             <form onsubmit="sendTradeChatMessage(event)" class="flex gap-2">
               <input type="text" id="trade-chat-input" required autocomplete="off"
                 class="w-full bg-slate-950 border border-slate-800 text-white px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-cyan-500 placeholder-slate-500"
@@ -497,9 +488,7 @@
           <p class="text-slate-400 text-xs mt-1" data-i18n="playersSubtitle">See who's online right now and send trade proposals!</p>
         </div>
 
-        <div id="online-players-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-          <!-- Populated dynamically -->
-        </div>
+        <div id="online-players-list" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
       </section>
 
     </main>
@@ -510,7 +499,7 @@
     </footer>
   </div>
 
-  <!-- ADMIN MODAL (Lorenzo Only) -->
+  <!-- ADMIN MODAL -->
   <div id="admin-modal" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
     <div class="glass-card rounded-3xl p-6 sm:p-8 w-full max-w-lg shadow-2xl relative border border-purple-500/30">
       <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
@@ -529,11 +518,9 @@
       </div>
 
       <div class="space-y-5">
-        <!-- Global Coins Dispenser -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
           <h4 class="font-bold text-white text-sm mb-1">Global Coins Dispenser</h4>
           <p class="text-xs text-slate-400 mb-3">Distribute any amount of coins to ALL online/registered players globally.</p>
-          
           <div class="flex gap-2">
             <input type="number" id="admin-coins-input" placeholder="Amount of coins..."
               class="w-full bg-slate-950 border border-slate-800 text-white px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-purple-500">
@@ -544,16 +531,13 @@
           </div>
         </div>
 
-        <!-- Global S26 Ultra Stock Manager -->
         <div class="bg-slate-900/90 border border-slate-800 rounded-2xl p-4">
           <h4 class="font-bold text-white text-sm mb-1">S26 Ultra Global Stock</h4>
           <p class="text-xs text-slate-400 mb-3">Set or adjust the global remaining stock for Samsung Galaxy S26 Ultra.</p>
-          
           <div class="flex items-center justify-between mb-3 bg-slate-950 px-3.5 py-2 rounded-xl border border-slate-800">
             <span class="text-xs text-slate-400">Current Global Stock:</span>
             <span id="admin-stock-display" class="font-black text-cyan-400 text-sm">---</span>
           </div>
-
           <div class="flex gap-2">
             <input type="number" id="admin-stock-input" placeholder="New stock limit..."
               class="w-full bg-slate-950 border border-slate-800 text-white px-3.5 py-2.5 rounded-xl text-xs focus:outline-none focus:border-purple-500">
@@ -1146,7 +1130,6 @@
     function t(key, replacements = {}) {
       const dict = I18N[currentLang] || I18N['en'];
       let str = dict[key] || I18N['en'][key] || key;
-
       Object.keys(replacements).forEach(k => {
         str = str.replace(new RegExp(`\\{${k}\\}`, 'g'), replacements[k]);
       });
@@ -1210,7 +1193,6 @@
     ];
 
     const PHONES_CATALOG = [
-      // Samsung
       { id: "a01core", brand: "samsung", name: "Samsung Galaxy A01 Core", price: 0, income: 1, color: "from-blue-500 to-indigo-600", icon: "fa-mobile-screen" },
       { id: "a10", brand: "samsung", name: "Samsung Galaxy A10", price: 300, income: 10, color: "from-cyan-500 to-blue-600", icon: "fa-mobile-screen-button" },
       { id: "a12", brand: "samsung", name: "Samsung Galaxy A12", price: 450, income: 15, color: "from-sky-500 to-blue-700", icon: "fa-mobile-screen" },
@@ -1238,7 +1220,6 @@
       { id: "zfold6", brand: "samsung", name: "Samsung Galaxy Z Fold6", price: 32000, income: 9000, color: "from-indigo-600 to-slate-900", icon: "fa-mobile" },
       { id: "s26ultra", brand: "samsung", name: "Samsung Galaxy S26 Ultra", price: 6000, income: 10000, color: "from-rose-500 to-red-600", icon: "fa-mobile" },
 
-      // Apple
       { id: "iphone11", brand: "apple", name: "iPhone 11", price: 1200, income: 70, color: "from-slate-600 to-slate-800", icon: "fa-apple" },
       { id: "iphone12", brand: "apple", name: "iPhone 12", price: 2500, income: 180, color: "from-blue-600 to-indigo-800", icon: "fa-apple" },
       { id: "iphone13", brand: "apple", name: "iPhone 13 Pro", price: 5000, income: 450, color: "from-emerald-600 to-teal-900", icon: "fa-apple" },
@@ -1246,30 +1227,24 @@
       { id: "iphone15", brand: "apple", name: "iPhone 15 Pro Max", price: 18000, income: 3200, color: "from-amber-600 to-yellow-900", icon: "fa-apple" },
       { id: "iphone16pro", brand: "apple", name: "iPhone 16 Pro Max", price: 28000, income: 7500, color: "from-indigo-700 to-slate-950", icon: "fa-apple" },
 
-      // Xiaomi
       { id: "redmi9", brand: "xiaomi", name: "Redmi 9C", price: 250, income: 8, color: "from-orange-500 to-red-700", icon: "fa-bolt" },
       { id: "redminote11", brand: "xiaomi", name: "Redmi Note 11", price: 900, income: 40, color: "from-amber-500 to-orange-700", icon: "fa-bolt" },
       { id: "xiaomi13", brand: "xiaomi", name: "Xiaomi 13 Pro", price: 4500, income: 380, color: "from-orange-600 to-amber-900", icon: "fa-bolt" },
       { id: "xiaomi14ultra", brand: "xiaomi", name: "Xiaomi 14 Ultra", price: 12500, income: 1900, color: "from-neutral-700 to-neutral-900", icon: "fa-bolt" },
 
-      // Motorola
       { id: "motog20", brand: "motorola", name: "Moto G20", price: 350, income: 12, color: "from-cyan-600 to-blue-900", icon: "fa-mobile" },
       { id: "motog52", brand: "motorola", name: "Moto G52", price: 850, income: 38, color: "from-blue-600 to-indigo-900", icon: "fa-mobile" },
       { id: "motoedge40", brand: "motorola", name: "Moto Edge 40", price: 3800, income: 280, color: "from-emerald-600 to-cyan-900", icon: "fa-mobile" },
 
-      // Huawei
       { id: "huaweip30", brand: "huawei", name: "Huawei P30 Pro", price: 1500, income: 95, color: "from-red-600 to-rose-900", icon: "fa-signal" },
       { id: "huaweitermate", brand: "huawei", name: "Huawei Mate 60 Pro", price: 14000, income: 2400, color: "from-stone-700 to-stone-900", icon: "fa-signal" },
 
-      // Google Pixel
       { id: "pixel6", brand: "google", name: "Google Pixel 6", price: 2000, income: 140, color: "from-teal-600 to-cyan-900", icon: "fa-g" },
       { id: "pixel8pro", brand: "google", name: "Google Pixel 8 Pro", price: 8500, income: 1050, color: "from-blue-600 to-slate-900", icon: "fa-g" },
 
-      // OnePlus
       { id: "oneplus9", brand: "oneplus", name: "OnePlus 9 Pro", price: 2800, income: 210, color: "from-red-500 to-neutral-900", icon: "fa-1" },
       { id: "oneplus12", brand: "oneplus", name: "OnePlus 12", price: 9500, income: 1300, color: "from-emerald-600 to-neutral-950", icon: "fa-1" },
 
-      // Asus ROG
       { id: "asusrog6", brand: "asus", name: "Asus ROG Phone 6", price: 11000, income: 1550, color: "from-purple-600 to-red-900", icon: "fa-gamepad" },
       { id: "asusrog8", brand: "asus", name: "Asus ROG Phone 8 Pro", price: 24000, income: 5500, color: "from-indigo-700 to-red-950", icon: "fa-gamepad" }
     ];
@@ -1278,11 +1253,7 @@
     // 4. GLOBAL APP STATE & AUDIO SYNTHESIZER
     // ==========================================
     let currentUser = null;
-    let userData = {
-      money: 0,
-      inventory: {},
-      claimedFree: false
-    };
+    let userData = { money: 0, inventory: {}, claimedFree: false };
     let globalS26Stock = 100;
     let activeTrade = null;
     let activeTradeId = null;
@@ -1292,24 +1263,18 @@
     const STORAGE_KEY = 'phone_tycoon_user';
 
     function initAudio() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function playSound(type) {
       try {
         initAudio();
         if (!audioCtx) return;
-
         const osc = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
         osc.connect(gain);
         gain.connect(audioCtx.destination);
-
         const now = audioCtx.currentTime;
 
         if (type === 'money') {
@@ -1360,12 +1325,7 @@
         success: 'bg-slate-900 border-emerald-500 text-emerald-300',
         error: 'bg-slate-900 border-red-500 text-red-300'
       };
-
-      const icons = {
-        info: 'fa-circle-info',
-        success: 'fa-circle-check',
-        error: 'fa-triangle-exclamation'
-      };
+      const icons = { info: 'fa-circle-info', success: 'fa-circle-check', error: 'fa-triangle-exclamation' };
 
       toast.className = `pointer-events-auto border-l-4 p-4 rounded-2xl shadow-2xl flex items-center justify-between gap-3 text-xs font-semibold transition-all transform translate-y-2 opacity-0 ${bgColors[type] || bgColors.info}`;
       toast.innerHTML = `
@@ -1379,11 +1339,7 @@
       `;
 
       container.appendChild(toast);
-
-      setTimeout(() => {
-        toast.classList.remove('translate-y-2', 'opacity-0');
-      }, 10);
-
+      setTimeout(() => toast.classList.remove('translate-y-2', 'opacity-0'), 10);
       setTimeout(() => {
         if (toast.parentNode) {
           toast.classList.add('opacity-0');
@@ -1468,7 +1424,6 @@
           playSound('error');
           return;
         }
-        
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ username: usernameInput, password: passwordInput }));
         loginUser(usernameInput, data);
       } else {
@@ -1480,7 +1435,6 @@
           createdOn: Date.now()
         };
         await userRef.set(newUserObj);
-        
         localStorage.setItem(STORAGE_KEY, JSON.stringify({ username: usernameInput, password: passwordInput }));
         loginUser(usernameInput, newUserObj);
         showToast(t('accountCreated'), "success");
@@ -1518,16 +1472,13 @@
 
     function handleLogout() {
       localStorage.removeItem(STORAGE_KEY);
-
       if (currentUser) {
         db.ref('/users/' + currentUser + '/online').set(false);
         db.ref('/presence/' + currentUser).remove();
-        
         db.ref('/users/' + currentUser).off();
         db.ref('/trades').off();
         db.ref('/users').off();
       }
-
       if (idleInterval) clearInterval(idleInterval);
 
       currentUser = null;
@@ -1556,7 +1507,6 @@
         if (snap.val() === true) {
           myPresenceRef.onDisconnect().remove();
           userOnlineRef.onDisconnect().set(false);
-          
           myPresenceRef.set(true);
           userOnlineRef.set(true);
         }
@@ -1613,7 +1563,6 @@
 
     function startIdleEngine() {
       if (idleInterval) clearInterval(idleInterval);
-
       idleInterval = setInterval(() => {
         const incomePerSec = calculateTotalIncome();
         if (incomePerSec > 0 && currentUser) {
@@ -1627,13 +1576,11 @@
     function spawnMoneyFloat(text) {
       const anchor = document.getElementById('money-float-anchor');
       if (!anchor) return;
-
       const el = document.createElement('div');
       el.className = 'money-float text-xs';
       el.innerText = text;
       el.style.left = (Math.random() * 40 + 30) + '%';
       el.style.top = '0px';
-
       anchor.appendChild(el);
       setTimeout(() => el.remove(), 1100);
     }
@@ -1657,10 +1604,7 @@
         activeBtn.classList.remove('border-transparent', 'text-slate-400');
       }
 
-      if (tabName === 'shop') {
-        backToBrandsMenu();
-      }
-
+      if (tabName === 'shop') backToBrandsMenu();
       playSound('notify');
     }
 
@@ -1734,7 +1678,6 @@
 
     async function claimFreePhone() {
       if (userData.claimedFree) return;
-
       userData.claimedFree = true;
       const currentA01 = userData.inventory['a01core'] || 0;
       userData.inventory['a01core'] = currentA01 + 1;
@@ -1757,7 +1700,6 @@
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-5 flex flex-col items-center text-center shadow-lg hover:border-cyan-500/50 cursor-pointer transition-all transform hover:-translate-y-1 group";
         card.onclick = () => selectBrand(brand.id);
-
         card.innerHTML = `
           <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr ${brand.color} flex items-center justify-center text-white text-3xl shadow-lg mb-3 group-hover:scale-110 transition-transform">
             <i class="fa-solid ${brand.icon}"></i>
@@ -1768,9 +1710,7 @@
         brandsGrid.appendChild(card);
       });
 
-      if (currentSelectedBrand) {
-        renderBrandPhonesList(currentSelectedBrand);
-      }
+      if (currentSelectedBrand) renderBrandPhonesList(currentSelectedBrand);
     }
 
     function selectBrand(brandId) {
@@ -1792,12 +1732,10 @@
       if (!brandObj) return;
 
       document.getElementById('selected-brand-title').innerText = brandObj.name + " Models";
-
       const grid = document.getElementById('brand-phones-grid');
       grid.innerHTML = '';
 
       const brandPhones = PHONES_CATALOG.filter(p => p.brand === brandId);
-
       brandPhones.forEach(phone => {
         const canAfford = userData.money >= phone.price;
         const isS26 = phone.id === 's26ultra';
@@ -1805,7 +1743,6 @@
 
         const card = document.createElement('div');
         card.className = "glass-card rounded-2xl p-5 flex flex-col justify-between shadow-lg relative overflow-hidden hover:border-slate-700 transition-all";
-        
         card.innerHTML = `
           <div>
             <div class="flex items-center justify-between mb-4">
@@ -1819,11 +1756,9 @@
                 ${isS26 ? `<span class="text-[10px] font-bold px-2 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/20">Stock: ${globalS26Stock}</span>` : ''}
               </div>
             </div>
-
             <h3 class="font-bold text-white text-base">${phone.name}</h3>
             <p class="text-xs text-slate-400 mt-1">Boosts passive income stream</p>
           </div>
-
           <div class="mt-6 pt-4 border-t border-slate-800/80 flex items-center justify-between gap-3">
             <div>
               <span class="text-[9px] uppercase font-bold text-slate-500 block">${t('price')}</span>
@@ -1831,7 +1766,6 @@
                 ${phone.price === 0 ? t('free') : phone.price.toLocaleString('en-US') + ' Coins'}
               </span>
             </div>
-
             <button onclick="buyPhone('${phone.id}')" ${((!canAfford && phone.price > 0) || outOfStock) ? 'disabled' : ''}
               class="px-4 py-2.5 rounded-xl font-bold text-xs transition-all flex items-center gap-1.5 ${
                 outOfStock
@@ -1860,12 +1794,10 @@
         return;
       }
 
-      if (phone.id === 's26ultra') {
-        if (globalS26Stock <= 0) {
-          showToast("Samsung Galaxy S26 Ultra is completely out of stock globally!", "error");
-          playSound('error');
-          return;
-        }
+      if (phone.id === 's26ultra' && globalS26Stock <= 0) {
+        showToast("Samsung Galaxy S26 Ultra is completely out of stock globally!", "error");
+        playSound('error');
+        return;
       }
 
       if (userData.money < phone.price) {
@@ -1884,18 +1816,16 @@
       };
 
       if (phone.id === 's26ultra') {
-        const newStock = Math.max(0, globalS26Stock - 1);
-        updates['/globalStock/s26ultra'] = newStock;
+        updates['/globalStock/s26ultra'] = Math.max(0, globalS26Stock - 1);
       }
 
       await db.ref().update(updates);
-
       playSound('money');
       showToast(t('boughtPhone', { name: phone.name }), "success");
     }
 
     // ==========================================
-    // 8. ADMIN PANEL (Lorenzo Only)
+    // 8. ADMIN PANEL
     // ==========================================
     function openAdminModal() {
       if (currentUser !== 'lorenzo') return;
@@ -1920,8 +1850,7 @@
       const updates = {};
 
       Object.keys(users).forEach(u => {
-        const currentMoney = users[u].money || 0;
-        updates[`/users/${u}/money`] = currentMoney + inputVal;
+        updates[`/users/${u}/money`] = (users[u].money || 0) + inputVal;
       });
 
       await db.ref().update(updates);
@@ -1950,7 +1879,6 @@
     async function handleSearchAndRequestTrade(e) {
       e.preventDefault();
       const query = document.getElementById('trade-search-input').value.trim().toLowerCase();
-      
       if (!query) return;
 
       if (query === currentUser) {
@@ -1960,7 +1888,6 @@
 
       const snap = await db.ref('/users').once('value');
       const users = snap.val() || {};
-
       const matchedUser = Object.keys(users).find(u => u.toLowerCase().startsWith(query) || u.toLowerCase() === query);
 
       if (!matchedUser) {
@@ -1969,8 +1896,7 @@
         return;
       }
 
-      const isOnline = users[matchedUser].online;
-      if (!isOnline) {
+      if (!users[matchedUser].online) {
         showToast(t('userOffline', { username: matchedUser }), "error");
         return;
       }
@@ -1980,7 +1906,6 @@
 
     async function sendTradeRequest(targetUser) {
       const tradeId = `${currentUser}_${targetUser}_${Date.now()}`;
-      
       const tradeObj = {
         id: tradeId,
         p1: currentUser,
@@ -2003,7 +1928,6 @@
       const listContainer = document.getElementById('trade-requests-list');
       const pendingBadge = document.getElementById('pending-trade-badge');
       listContainer.innerHTML = '';
-
       let hasPending = false;
 
       Object.values(trades).forEach(trade => {
@@ -2021,7 +1945,6 @@
                 <p class="text-[11px] text-slate-400">Accept to open the live trade room.</p>
               </div>
             </div>
-
             <div class="flex items-center gap-2">
               <button onclick="acceptTradeRequest('${trade.id}')"
                 class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs transition-all shadow-md">
@@ -2066,7 +1989,6 @@
       );
 
       const room = document.getElementById('active-trade-room');
-
       if (!active) {
         room.classList.add('hidden');
         activeTrade = null;
@@ -2119,12 +2041,7 @@
       const text = input.value.trim();
       if (!text || !activeTradeId) return;
 
-      const messageObj = {
-        sender: currentUser,
-        text: text,
-        timestamp: Date.now()
-      };
-
+      const messageObj = { sender: currentUser, text: text, timestamp: Date.now() };
       await db.ref(`/trades/${activeTradeId}/messages`).push(messageObj);
       input.value = '';
       playSound('notify');
@@ -2133,8 +2050,8 @@
     function renderTradeChatMessages(messagesObj) {
       const container = document.getElementById('trade-chat-messages');
       container.innerHTML = '';
+      const messages = Object.values(messagesObj || {});
 
-      const messages = Object.values(messagesObj);
       if (messages.length === 0) {
         container.innerHTML = `<span class="text-slate-500 italic block text-center py-6">${t('chatStart')}</span>`;
         return;
@@ -2152,7 +2069,6 @@
         `;
         container.appendChild(msgDiv);
       });
-
       container.scrollTop = container.scrollHeight;
     }
 
@@ -2180,164 +2096,179 @@
       if (!phoneId || !activeTrade) return;
 
       const isP1 = activeTrade.p1 === currentUser;
-      const myOffer = isP1 ? (activeTrade.p1Offer || []) : (activeTrade.p2Offer || []);
+      const myOffer = isP1 ? [...(activeTrade.p1Offer || [])] : [...(activeTrade.p2Offer || [])];
 
-      myOffer.push(phoneId);
+      const currentCount = userData.inventory[phoneId] || 0;
+      const offeredCount = myOffer.filter(id => id === phoneId).length;
 
-      const updateData = {};
-      if (isP1) {
-        updateData.p1Offer = myOffer;
-        updateData.p1Accept = false;
-      } else {
-        updateData.p2Offer = myOffer;
-        updateData.p2Accept = false;
-      }
-
-      await db.ref('/trades/' + activeTradeId).update(updateData);
-      document.getElementById('my-trade-select').value = '';
-    }
-
-    async function removePhoneFromMyOffer(index) {
-      if (!activeTrade) return;
-
-      const isP1 = activeTrade.p1 === currentUser;
-      const myOffer = isP1 ? (activeTrade.p1Offer || []) : (activeTrade.p2Offer || []);
-
-      myOffer.splice(index, 1);
-
-      const updateData = {};
-      if (isP1) {
-        updateData.p1Offer = myOffer;
-        updateData.p1Accept = false;
-      } else {
-        updateData.p2Offer = myOffer;
-        updateData.p2Accept = false;
-      }
-
-      await db.ref('/trades/' + activeTradeId).update(updateData);
-    }
-
-    function renderOfferedList(containerId, list, isMine) {
-      const container = document.getElementById(containerId);
-      container.innerHTML = '';
-
-      if (!list || list.length === 0) {
-        container.innerHTML = `<span class="text-xs text-slate-500 italic block text-center py-8">${isMine ? t('noPhonesSelected') : t('partnerNoPhones')}</span>`;
+      if (currentCount <= offeredCount) {
+        showToast("You don't have enough of this phone in your inventory!", "error");
         return;
       }
 
-      list.forEach((phoneId, idx) => {
+      myOffer.push(phoneId);
+
+      const updates = {};
+      if (isP1) {
+        updates[`/trades/${activeTrade.id}/p1Offer`] = myOffer;
+        updates[`/trades/${activeTrade.id}/p1Accept`] = false;
+        updates[`/trades/${activeTrade.id}/p2Accept`] = false;
+      } else {
+        updates[`/trades/${activeTrade.id}/p2Offer`] = myOffer;
+        updates[`/trades/${activeTrade.id}/p1Accept`] = false;
+        updates[`/trades/${activeTrade.id}/p2Accept`] = false;
+      }
+
+      await db.ref().update(updates);
+      document.getElementById('my-trade-select').value = "";
+      playSound('notify');
+    }
+
+    async function removePhoneFromMyOfferByModel(phoneId) {
+      if (!activeTrade) return;
+      const isP1 = activeTrade.p1 === currentUser;
+      const myOffer = isP1 ? [...(activeTrade.p1Offer || [])] : [...(activeTrade.p2Offer || [])];
+      
+      const idx = myOffer.indexOf(phoneId);
+      if (idx > -1) {
+        myOffer.splice(idx, 1);
+        const updates = {};
+        if (isP1) {
+          updates[`/trades/${activeTrade.id}/p1Offer`] = myOffer;
+          updates[`/trades/${activeTrade.id}/p1Accept`] = false;
+          updates[`/trades/${activeTrade.id}/p2Accept`] = false;
+        } else {
+          updates[`/trades/${activeTrade.id}/p2Offer`] = myOffer;
+          updates[`/trades/${activeTrade.id}/p1Accept`] = false;
+          updates[`/trades/${activeTrade.id}/p2Accept`] = false;
+        }
+        await db.ref().update(updates);
+        playSound('notify');
+      }
+    }
+
+    function renderOfferedList(containerId, offerArray, isEditable) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (!offerArray || offerArray.length === 0) {
+        container.innerHTML = `<span class="text-xs text-slate-500 italic block text-center py-6">${containerId === 'my-offered-phones-list' ? t('noPhonesSelected') : t('partnerNoPhones')}</span>`;
+        return;
+      }
+
+      const counts = {};
+      offerArray.forEach(id => { counts[id] = (counts[id] || 0) + 1; });
+
+      Object.keys(counts).forEach(phoneId => {
         const phone = PHONES_CATALOG.find(p => p.id === phoneId);
         if (!phone) return;
+        const count = counts[phoneId];
 
         const item = document.createElement('div');
-        item.className = "bg-slate-900 border border-slate-800 rounded-xl p-2.5 flex items-center justify-between text-xs";
+        item.className = "flex items-center justify-between bg-slate-900 border border-slate-800 rounded-xl p-2.5";
         item.innerHTML = `
-          <div class="flex items-center gap-2">
-            <i class="fa-solid ${phone.icon} text-cyan-400"></i>
-            <span class="font-bold text-white">${phone.name}</span>
+          <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-tr ${phone.color} flex items-center justify-center text-white text-xs shadow">
+              <i class="fa-solid ${phone.icon}"></i>
+            </div>
+            <div>
+              <div class="font-bold text-white text-xs">${phone.name}</div>
+              <div class="text-[10px] text-cyan-400">+${phone.income.toLocaleString('en-US')} Coins/s</div>
+            </div>
           </div>
-          ${isMine ? `
-            <button onclick="removePhoneFromMyOffer(${idx})" class="text-red-400 hover:text-red-300 p-1">
-              <i class="fa-solid fa-trash-can"></i>
-            </button>
-          ` : ''}
+          <div class="flex items-center gap-3">
+            <span class="text-xs font-black text-white">${count}x</span>
+            ${isEditable ? `<button onclick="removePhoneFromMyOfferByModel('${phoneId}')" class="text-red-400 hover:text-red-300 p-1"><i class="fa-solid fa-xmark"></i></button>` : ''}
+          </div>
         `;
         container.appendChild(item);
       });
     }
 
-    async function validateTradeDuplicates(partnerName, myOffer, partnerOffer) {
-      const errorBox = document.getElementById('trade-duplicate-error');
-      const p1Btn = document.getElementById('p1-accept-btn');
+    async function toggleAcceptTrade() {
+      if (!activeTrade) return;
+      const isP1 = activeTrade.p1 === currentUser;
+      const newAccept = !(isP1 ? activeTrade.p1Accept : activeTrade.p2Accept);
 
+      const updates = {};
+      if (isP1) {
+        updates[`/trades/${activeTrade.id}/p1Accept`] = newAccept;
+      } else {
+        updates[`/trades/${activeTrade.id}/p2Accept`] = newAccept;
+      }
+
+      await db.ref().update(updates);
+      playSound('notify');
+
+      setTimeout(async () => {
+        const snap = await db.ref('/trades/' + activeTrade.id).once('value');
+        if (snap.exists()) {
+          const tData = snap.val();
+          if (tData.p1Accept && tData.p2Accept) {
+            await executeTradeCompletion(tData);
+          }
+        }
+      }, 200);
+    }
+
+    async function validateTradeDuplicates(partnerName, myOffer, partnerOffer) {
+      const errBox = document.getElementById('trade-duplicate-error');
       const partnerSnap = await db.ref('/users/' + partnerName + '/inventory').once('value');
-      const partnerInventory = partnerSnap.val() || {};
+      const partnerInv = partnerSnap.val() || {};
 
       let hasDuplicate = false;
+      for (const phoneId of myOffer) {
+        if ((partnerInv[phoneId] || 0) > 0) { hasDuplicate = true; break; }
+      }
+      for (const phoneId of partnerOffer) {
+        if ((userData.inventory[phoneId] || 0) > 0) { hasDuplicate = true; break; }
+      }
 
-      partnerOffer.forEach(phoneId => {
-        if ((userData.inventory[phoneId] || 0) > 0) {
-          hasDuplicate = true;
-        }
-      });
-
-      myOffer.forEach(phoneId => {
-        if ((partnerInventory[phoneId] || 0) > 0) {
-          hasDuplicate = true;
-        }
-      });
-
+      const p1Btn = document.getElementById('p1-accept-btn');
       if (hasDuplicate) {
-        errorBox.classList.remove('hidden');
+        errBox.classList.remove('hidden');
         p1Btn.disabled = true;
         p1Btn.classList.add('opacity-50', 'cursor-not-allowed');
       } else {
-        errorBox.classList.add('hidden');
+        errBox.classList.add('hidden');
         p1Btn.disabled = false;
         p1Btn.classList.remove('opacity-50', 'cursor-not-allowed');
       }
     }
 
-    // ==========================================
-    // 11. ATOMIC TRADE EXECUTION
-    // ==========================================
-    async function toggleAcceptTrade() {
-      if (!activeTrade) return;
+    async function executeTradeCompletion(trade) {
+      const p1 = trade.p1;
+      const p2 = trade.p2;
+      const p1Offer = trade.p1Offer || [];
+      const p2Offer = trade.p2Offer || [];
 
-      const isP1 = activeTrade.p1 === currentUser;
-      const currentAccept = isP1 ? activeTrade.p1Accept : activeTrade.p2Accept;
+      const usersSnap = await db.ref('/users').once('value');
+      const users = usersSnap.val() || {};
+      if (!users[p1] || !users[p2]) return;
 
-      const updateData = {};
-      if (isP1) {
-        updateData.p1Accept = !currentAccept;
-      } else {
-        updateData.p2Accept = !currentAccept;
-      }
+      const p1Inv = users[p1].inventory || {};
+      const p2Inv = users[p2].inventory || {};
 
-      await db.ref('/trades/' + activeTradeId).update(updateData);
-
-      const bothAccepted = isP1 
-        ? (!currentAccept && activeTrade.p2Accept)
-        : (!currentAccept && activeTrade.p1Accept);
-
-      if (bothAccepted) {
-        finalizeTradeTransaction();
-      }
-    }
-
-    async function finalizeTradeTransaction() {
-      if (!activeTrade) return;
-
-      const p1 = activeTrade.p1;
-      const p2 = activeTrade.p2;
-
-      const p1Snap = await db.ref('/users/' + p1 + '/inventory').once('value');
-      const p2Snap = await db.ref('/users/' + p2 + '/inventory').once('value');
-
-      const p1Inv = p1Snap.val() || {};
-      const p2Inv = p2Snap.val() || {};
-
-      const p1Offer = activeTrade.p1Offer || [];
-      const p2Offer = activeTrade.p2Offer || [];
-
-      p1Offer.forEach(phoneId => {
-        if (p1Inv[phoneId] > 0) p1Inv[phoneId]--;
-        p2Inv[phoneId] = (p2Inv[phoneId] || 0) + 1;
+      p1Offer.forEach(id => {
+        p1Inv[id] = Math.max(0, (p1Inv[id] || 0) - 1);
+        if (p1Inv[id] === 0) delete p1Inv[id];
+        p2Inv[id] = (p2Inv[id] || 0) + 1;
       });
 
-      p2Offer.forEach(phoneId => {
-        if (p2Inv[phoneId] > 0) p2Inv[phoneId]--;
-        p1Inv[phoneId] = (p1Inv[phoneId] || 0) + 1;
+      p2Offer.forEach(id => {
+        p2Inv[id] = Math.max(0, (p2Inv[id] || 0) - 1);
+        if (p2Inv[id] === 0) delete p2Inv[id];
+        p1Inv[id] = (p1Inv[id] || 0) + 1;
       });
 
-      await db.ref('/users/' + p1 + '/inventory').set(p1Inv);
-      await db.ref('/users/' + p2 + '/inventory').set(p2Inv);
+      await db.ref().update({
+        [`/users/${p1}/inventory`]: p1Inv,
+        [`/users/${p2}/inventory`]: p2Inv,
+        [`/trades/${trade.id}/status`]: 'completed'
+      });
 
-      await db.ref('/trades/' + activeTradeId).update({ status: 'completed' });
-
-      playSound('success');
       showToast(t('tradeCompleted'), "success");
+      playSound('success');
     }
 
     async function cancelTrade() {
@@ -2346,55 +2277,55 @@
       showToast(t('tradeCancelled'), "info");
     }
 
-    // ==========================================
-    // 12. ONLINE PLAYERS LIST
-    // ==========================================
     function renderOnlinePlayers(users) {
-      const grid = document.getElementById('online-players-list');
-      grid.innerHTML = '';
-
+      const container = document.getElementById('online-players-list');
+      container.innerHTML = '';
       let count = 0;
 
-      Object.keys(users).forEach(u => {
-        if (u !== currentUser) {
-          count++;
-          const isOnline = users[u].online === true;
-          const userMoney = users[u].money || 0;
+      Object.keys(users).forEach(username => {
+        if (username === currentUser) return;
+        const uData = users[username];
+        if (!uData.online) return;
 
-          const card = document.createElement('div');
-          card.className = "glass-card rounded-2xl p-4 flex items-center justify-between shadow-md";
-          card.innerHTML = `
-            <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center text-slate-200 font-extrabold text-sm">
-                ${u.charAt(0).toUpperCase()}
-              </div>
-              <div>
-                <h4 class="font-bold text-white text-sm">@${u}</h4>
-                <div class="flex items-center gap-2 mt-0.5">
-                  <span class="inline-flex items-center gap-1 text-[10px] ${isOnline ? 'text-emerald-400' : 'text-slate-500'} font-semibold">
-                    <span class="w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-emerald-400' : 'bg-slate-600'}"></span>
-                    ${isOnline ? t('online') : t('offline')}
-                  </span>
-                  <span class="text-[10px] text-slate-500">• ${userMoney.toLocaleString('en-US')} Coins</span>
-                </div>
-              </div>
-            </div>
-
-            ${isOnline ? `
-              <button onclick="sendTradeRequest('${u}')"
-                class="px-3 py-1.5 rounded-xl bg-cyan-600/20 hover:bg-cyan-600 text-cyan-300 hover:text-white border border-cyan-500/30 font-bold text-xs transition-all flex items-center gap-1">
-                <i class="fa-solid fa-handshake"></i>
-                <span>${t('tradeBtn')}</span>
-              </button>
-            ` : ''}
-          `;
-          grid.appendChild(card);
+        count++;
+        let phoneCount = 0;
+        if (uData.inventory) {
+          Object.values(uData.inventory).forEach(c => phoneCount += c);
         }
+
+        const card = document.createElement('div');
+        card.className = "glass-card rounded-2xl p-4 flex items-center justify-between shadow-lg";
+        card.innerHTML = `
+          <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-xl bg-cyan-500/20 text-cyan-400 flex items-center justify-center font-bold">
+              <i class="fa-solid fa-user-astronaut"></i>
+            </div>
+            <div>
+              <div class="font-bold text-white text-sm">@${username}</div>
+              <div class="text-[11px] text-slate-400">${phoneCount} Devices Owned</div>
+            </div>
+          </div>
+          <button onclick="quickStartTrade('${username}')"
+            class="px-3.5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white font-bold text-xs shadow-md transition-all">
+            ${t('tradeBtn')}
+          </button>
+        `;
+        container.appendChild(card);
       });
 
       if (count === 0) {
-        grid.innerHTML = `<p class="text-xs text-slate-500 italic col-span-full">${t('noPlayers')}</p>`;
+        container.innerHTML = `
+          <div class="col-span-full py-12 text-center glass-card rounded-3xl border border-dashed border-slate-800">
+            <i class="fa-solid fa-users text-4xl text-slate-700 mb-3"></i>
+            <p class="text-slate-400 text-xs sm:text-sm font-medium">${t('noPlayers')}</p>
+          </div>
+        `;
       }
+    }
+
+    function quickStartTrade(username) {
+      document.getElementById('trade-search-input').value = username;
+      switchTab('trades');
     }
   </script>
 </body>
